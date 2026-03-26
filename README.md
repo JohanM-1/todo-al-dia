@@ -123,4 +123,4 @@ La app entiende los siguientes comandos de voz:
 
 ## Licencia
 
-MIT
+MIT 2026
