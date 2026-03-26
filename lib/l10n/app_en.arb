@@ -1,0 +1,299 @@
+{
+  "@@locale": "en",
+  "appTitle": "TodoAlDía",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "home": "Home",
+  "@home": {
+    "description": "Home tab label"
+  },
+  "movements": "Movements",
+  "@movements": {
+    "description": "Movements tab label"
+  },
+  "budgets": "Budgets",
+  "@budgets": {
+    "description": "Budgets tab label"
+  },
+  "goals": "Goals",
+  "@goals": {
+    "description": "Goals tab label"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings tab label"
+  },
+  "balance": "Balance",
+  "@balance": {
+    "description": "Balance label"
+  },
+  "income": "Income",
+  "@income": {
+    "description": "Income label"
+  },
+  "expense": "Expense",
+  "@expense": {
+    "description": "Expense label"
+  },
+  "savings": "Savings",
+  "@savings": {
+    "description": "Savings label"
+  },
+  "recentMovements": "Recent Movements",
+  "@recentMovements": {
+    "description": "Recent movements section title"
+  },
+  "viewAll": "View All",
+  "@viewAll": {
+    "description": "View all button text"
+  },
+  "noMovements": "No movements yet",
+  "@noMovements": {
+    "description": "Empty state message"
+  },
+  "tapPlusToStart": "Tap the + button to register your first expense",
+  "@tapPlusToStart": {
+    "description": "Empty state hint"
+  },
+  "addMovement": "Add Movement",
+  "@addMovement": {
+    "description": "Add movement page title"
+  },
+  "editMovement": "Edit Movement",
+  "@editMovement": {
+    "description": "Edit movement page title"
+  },
+  "amount": "Amount",
+  "@amount": {
+    "description": "Amount field label"
+  },
+  "description": "Description",
+  "@description": {
+    "description": "Description field label"
+  },
+  "category": "Category",
+  "@category": {
+    "description": "Category field label"
+  },
+  "date": "Date",
+  "@date": {
+    "description": "Date field label"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Save button text"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button text"
+  },
+  "deleteMovement": "Delete Movement",
+  "@deleteMovement": {
+    "description": "Delete movement title"
+  },
+  "deleteMovementConfirm": "Are you sure you want to delete this movement?",
+  "@deleteMovementConfirm": {
+    "description": "Delete movement confirmation message"
+  },
+  "configuration": "Configuration",
+  "@configuration": {
+    "description": "Settings page title"
+  },
+  "general": "General",
+  "@general": {
+    "description": "General settings section"
+  },
+  "data": "Data",
+  "@data": {
+    "description": "Data settings section"
+  },
+  "about": "About",
+  "@about": {
+    "description": "About settings section"
+  },
+  "currency": "Currency",
+  "@currency": {
+    "description": "Currency setting label"
+  },
+  "theme": "Theme",
+  "@theme": {
+    "description": "Theme setting label"
+  },
+  "themeColor": "Theme Color",
+  "@themeColor": {
+    "description": "Theme color setting label"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Language setting label"
+  },
+  "categories": "Categories",
+  "@categories": {
+    "description": "Categories setting label"
+  },
+  "manageCategories": "Manage Categories",
+  "@manageCategories": {
+    "description": "Manage categories setting subtitle"
+  },
+  "exportMovements": "Export Movements",
+  "@exportMovements": {
+    "description": "Export setting label"
+  },
+  "exportToCSV": "Export to CSV",
+  "@exportToCSV": {
+    "description": "Export setting subtitle"
+  },
+  "deleteAllData": "Delete All Data",
+  "@deleteAllData": {
+    "description": "Delete data setting label"
+  },
+  "deleteAllDataSubtitle": "Delete all history",
+  "@deleteAllDataSubtitle": {
+    "description": "Delete data setting subtitle"
+  },
+  "version": "Version",
+  "@version": {
+    "description": "Version setting label"
+  },
+  "termsAndPrivacy": "Terms and Privacy",
+  "@termsAndPrivacy": {
+    "description": "Terms setting label"
+  },
+  "selectCurrency": "Select Currency",
+  "@selectCurrency": {
+    "description": "Currency picker dialog title"
+  },
+  "selectTheme": "Select Theme",
+  "@selectTheme": {
+    "description": "Theme picker dialog title"
+  },
+  "selectColor": "Select Color",
+  "@selectColor": {
+    "description": "Color picker dialog title"
+  },
+  "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "Language picker dialog title"
+  },
+  "light": "Light",
+  "@light": {
+    "description": "Light theme option"
+  },
+  "dark": "Dark",
+  "@dark": {
+    "description": "Dark theme option"
+  },
+  "system": "System",
+  "@system": {
+    "description": "System theme option"
+  },
+  "auto": "Auto",
+  "@auto": {
+    "description": "Auto language option"
+  },
+  "spanish": "Spanish",
+  "@spanish": {
+    "description": "Spanish language option"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English language option"
+  },
+  "deleteDataConfirm": "Delete all data?",
+  "@deleteDataConfirm": {
+    "description": "Delete data confirmation dialog title"
+  },
+  "deleteDataWarning": "This will delete all movements, budgets, and goals. This action cannot be undone.",
+  "@deleteDataWarning": {
+    "description": "Delete data warning message"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button text"
+  },
+  "error": "Error",
+  "@error": {
+    "description": "Error message prefix"
+  },
+  "dataDeleted": "Data deleted",
+  "@dataDeleted": {
+    "description": "Data deleted snackbar message"
+  },
+  "monthlySummary": "Monthly Summary",
+  "@monthlySummary": {
+    "description": "Monthly summary section title"
+  },
+  "expensesByCategory": "Expenses by Category",
+  "@expensesByCategory": {
+    "description": "Expenses by category section title"
+  },
+  "noCategory": "No category",
+  "@noCategory": {
+    "description": "Default category name"
+  },
+  "addGoal": "Add Goal",
+  "@addGoal": {
+    "description": "Add goal page title"
+  },
+  "editGoal": "Edit Goal",
+  "@editGoal": {
+    "description": "Edit goal page title"
+  },
+  "goalName": "Goal Name",
+  "@goalName": {
+    "description": "Goal name field label"
+  },
+  "targetAmount": "Target Amount",
+  "@targetAmount": {
+    "description": "Target amount field label"
+  },
+  "currentAmount": "Current Amount",
+  "@currentAmount": {
+    "description": "Current amount field label"
+  },
+  "deadline": "Deadline",
+  "@deadline": {
+    "description": "Deadline field label"
+  },
+  "addBudget": "Add Budget",
+  "@addBudget": {
+    "description": "Add budget page title"
+  },
+  "editBudget": "Edit Budget",
+  "@editBudget": {
+    "description": "Edit budget page title"
+  },
+  "budgetAmount": "Budget Amount",
+  "@budgetAmount": {
+    "description": "Budget amount field label"
+  },
+  "spent": "Spent",
+  "@spent": {
+    "description": "Spent amount label"
+  },
+  "remaining": "Remaining",
+  "@remaining": {
+    "description": "Remaining amount label"
+  },
+  "noBudgets": "No budgets yet",
+  "@noBudgets": {
+    "description": "Empty budgets message"
+  },
+  "noGoals": "No goals yet",
+  "@noGoals": {
+    "description": "Empty goals message"
+  },
+  "budgetExceeded": "Budget Exceeded",
+  "@budgetExceeded": {
+    "description": "Budget exceeded warning"
+  },
+  "budgetWarning": "Budget Warning",
+  "@budgetWarning": {
+    "description": "Budget warning message"
+  }
+}
