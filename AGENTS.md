@@ -2,8 +2,12 @@
 Mantener un código Flutter multiplataforma consistente, fácil de mantener, testeable y con buen rendimiento.
 
 ## Alcance
-- Flutter/Dart y configuración asociada: `pubspec.yaml`, `analysis_options.yaml`, Android (`android/`), iOS/macOS (`ios/`, `macos/`), Web (`web/`), Windows/Linux (`windows/`, `linux/`).
+- Flutter/Dart y configuración asociada dentro de `app_flutter/`: `pubspec.yaml`, `analysis_options.yaml`, Android (`android/`), iOS/macOS (`ios/`, `macos/`), Web (`web/`), Windows/Linux (`windows/`, `linux/`).
 - Cambios deben ser compatibles con null-safety.
+
+## Estructura del repo
+- La app Flutter del proyecto vive en `app_flutter/`.
+- La raíz del repo se reserva para documentación, automatizaciones y futuros paquetes/apps del monorepo.
 
 ## Estilo y formato
 - Ejecutar `dart format .` y no introducir formateo manual inconsistente.
@@ -44,3 +48,9 @@ Mantener un código Flutter multiplataforma consistente, fácil de mantener, tes
 ## Pruebas y calidad
 - Agregar/actualizar pruebas cuando el cambio afecte lógica (unit/widget) o flujos críticos.
 - Mantener el proyecto pasando `flutter analyze` y `flutter test`.
+
+## Skills de proyecto
+
+| Skill | Descripción | Ruta |
+|------|-------------|------|
+| `apple-ux-patterns` | Guía de interacción para estado, feedback, accesibilidad, CTA claros y funnels de conversión sin clonar la estética visual de Apple. | `skills/apple-ux-patterns/SKILL.md` |

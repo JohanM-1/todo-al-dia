@@ -1,0 +1,15 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" rx="40" fill="#F5F7FB"/>
+  <rect x="64" y="64" width="1072" height="502" rx="32" fill="#FFFFFF" stroke="#D8E1F0" stroke-width="2"/>
+  <circle cx="152" cy="152" r="28" fill="#0F172A"/>
+  <path d="M141 152L149 160L164 145" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="206" y="166" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="700">TodoAlDía</text>
+  <text x="96" y="258" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="68" font-weight="700">Organizá tu dinero sin fricción.</text>
+  <text x="96" y="326" fill="#334155" font-family="Arial, Helvetica, sans-serif" font-size="32">Registrá gastos e ingresos en segundos, con foco en claridad, control y progreso.</text>
+  <rect x="96" y="402" width="248" height="74" rx="20" fill="#0F172A"/>
+  <text x="129" y="447" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">Voz-first</text>
+  <rect x="368" y="402" width="248" height="74" rx="20" fill="#E2E8F0"/>
+  <text x="405" y="447" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">Offline-first</text>
+  <rect x="640" y="402" width="248" height="74" rx="20" fill="#E2E8F0"/>
+  <text x="685" y="447" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">Metas claras</text>
+</svg>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://todoaldia.app/sitemap.xml

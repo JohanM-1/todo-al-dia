@@ -1,10 +1,17 @@
 # TodoAlDía
 
-> App financiera personal con voz-first - MVP
+> Monorepo de TodoAlDía. La app Flutter vive en `app_flutter/`.
 
 ## Descripción
 
 TodoAlDía es una aplicación financiera personal diseñada para registrar gastos e ingresos de manera rápida y sin fricción, utilizando voz como método de entrada principal.
+
+## Estructura del repositorio
+
+```text
+app_flutter/   # App Flutter principal
+landing/       # Placeholder para futura landing en Astro
+```
 
 ## Características MVP
 
@@ -31,6 +38,7 @@ TodoAlDía es una aplicación financiera personal diseñada para registrar gasto
 ```bash
 git clone <repo-url>
 cd todoaldia
+cd app_flutter
 ```
 
 2. **Instalar dependencias:**
@@ -52,25 +60,25 @@ flutter run
 
 ### APK Debug
 ```bash
-flutter build apk --debug
+cd app_flutter && flutter build apk --debug
 ```
 
 ### APK Release
 ```bash
-flutter build apk --release
+cd app_flutter && flutter build apk --release
 ```
 
 ### Web
 ```bash
-flutter build web
+cd app_flutter && flutter build web
 ```
 
 ## Arquitectura
 
-El proyecto sigue **Clean Architecture** con separación en capas:
+La app Flutter en `app_flutter/` sigue **Clean Architecture** con separación en capas:
 
 ```
-lib/
+app_flutter/lib/
 ├── core/                    # Configuración central
 │   ├── constants/           # Constantes de la app
 │   ├── errors/              # Errores personalizados

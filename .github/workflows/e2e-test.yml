@@ -2,7 +2,7 @@
 #
 # E2E Testing with Patrol on Android Emulator.
 #
-# Triggers on PRs that touch lib/ or integration_test/.
+# Triggers on PRs that touch app_flutter/lib/ or app_flutter/integration_test/.
 # Note: GitHub-hosted runners lack hardware acceleration for Android emulators,
 # making emulator performance poor. For production use, consider:
 #   - Firebase Test Lab (gcloud firebase test android run)
@@ -13,8 +13,8 @@ name: E2E Tests (Patrol)
 on:
   pull_request:
     paths:
-      - 'lib/**'
-      - 'integration_test/**'
+      - 'app_flutter/lib/**'
+      - 'app_flutter/integration_test/**'
   workflow_dispatch:  # Manual trigger
 
 concurrency:
@@ -26,6 +26,9 @@ jobs:
     name: Patrol E2E on Android Emulator
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: app_flutter
 
     steps:
       - name: Clone repository
@@ -95,8 +98,8 @@ jobs:
         with:
           name: patrol-report
           path: |
-            build/reports/patrol/
-            integration_test/*.png
+            app_flutter/build/reports/patrol/
+            app_flutter/integration_test/*.png
           retention-days: 14
 
       - name: Shutdown emulator

@@ -11,6 +11,9 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app_flutter
 
     steps:
       - name: Checkout repository
@@ -60,7 +63,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: web-build
-          publish_dir: ./build/web
+          publish_dir: ./app_flutter/build/web
           force_orphan: true
           full_commit_message: 'chore: publish web build for ${{ github.ref_name }}'
 
@@ -75,13 +78,13 @@ jobs:
         with:
           name: release-${{ github.ref_name }}-${{ github.run_number }}
           path: |
-            build/web-release.zip
-            build/app/outputs/flutter-apk/app-release.apk
+            app_flutter/build/web-release.zip
+            app_flutter/build/app/outputs/flutter-apk/app-release.apk
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
           files: |
-            build/web-release.zip
-            build/app/outputs/flutter-apk/app-release.apk
+            app_flutter/build/web-release.zip
+            app_flutter/build/app/outputs/flutter-apk/app-release.apk

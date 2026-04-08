@@ -1,0 +1,291 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../config/site';
+
+const title = 'TodoAlDía | Registrá tu plata rápido y abrí la app';
+const description =
+  'TodoAlDía te ayuda a registrar gastos e ingresos en segundos para entender en qué se te va la plata y actuar hoy, sin fricción ni vueltas.';
+
+const appUrl = siteConfig.appUrl;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'TodoAlDía',
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'Android, Web',
+  inLanguage: 'es-AR',
+  description,
+  url: 'https://todoaldia.app/',
+  downloadUrl: appUrl,
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'ARS',
+  },
+  featureList: ['Registro rapido', 'Resumen claro', 'Seguimiento de objetivos'],
+  potentialAction: {
+    '@type': 'ViewAction',
+    name: siteConfig.appCtaLabel,
+    target: appUrl,
+  },
+};
+
+const outcomes = [
+  {
+    title: 'Registrás antes de olvidarte',
+    description:
+      'Anotá un gasto o ingreso en segundos y evitá el clásico "después lo cargo" que nunca pasa.',
+  },
+  {
+    title: 'Ves qué está pasando hoy',
+    description:
+      'Balance, categorías y resumen mensual para detectar rápido dónde se te va la plata.',
+  },
+  {
+    title: 'Ajustás sin perder el ritmo',
+    description:
+      'Metas y presupuestos visibles para corregir a tiempo, sin planillas ni pantallas cargadas.',
+  },
+];
+
+const proofPoints = [
+  'Registro por voz o texto con correccion rapida.',
+  'Resumen del mes y balance actual sin ruido.',
+  'Presupuestos, metas y contexto util para decidir.',
+  'Base lista para Android y Web desde la misma app Flutter.',
+];
+
+const steps = [
+  {
+    title: '1. Cargás el movimiento',
+    description:
+      'Decís o escribís qué pasó. Si falta algo importante, la app te pide solo ese dato y seguís.',
+  },
+  {
+    title: '2. Confirmás sin frenar el flujo',
+    description:
+      'Recibís feedback inmediato sobre lo entendido y corregís sin rehacer todo desde cero.',
+  },
+  {
+    title: '3. Actuás con claridad',
+    description:
+      'Abrís la app y ves cuánto tenés, qué te está drenando y cómo venís con tus objetivos.',
+  },
+];
+
+const faqs = [
+  {
+    question: '¿Qué hago primero?',
+    answer: 'Abrís la app y registrás tu primer gasto o ingreso. La landing existe para llevarte a esa accion cuanto antes.',
+  },
+  {
+    question: '¿Qué promete TodoAlDia?',
+    answer: 'Menos friccion para cargar movimientos y mas claridad para decidir con tu plata en el dia a dia.',
+  },
+  {
+    question: '¿La URL de la app se puede cambiar facil?',
+    answer: 'Si. Quedo centralizada en `landing/src/config/site.ts` para ajustar el destino sin tocar el resto del funnel.',
+  },
+];
+---
+
+<BaseLayout title={title} description={description} canonical="/" structuredData={structuredData}>
+  <a class="skip-link" href="#contenido">Saltar al contenido principal</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="Ir al inicio de TodoAlDía">
+        <span class="brand-mark" aria-hidden="true">TD</span>
+        <span>TodoAlDía</span>
+      </a>
+
+      <nav aria-label="Navegacion principal">
+        <ul class="nav-list">
+          <li><a href="#como-funciona">Como funciona</a></li>
+          <li><a href="#preguntas">Preguntas</a></li>
+        </ul>
+      </nav>
+
+      <a
+        class="button button-primary header-cta"
+        href={appUrl}
+        data-analytics="cta-primary-header"
+        data-destination={siteConfig.appDestinationLabel}
+      >
+        {siteConfig.appCtaShortLabel}
+      </a>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="hero section" id="top">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Una app para pasar de registrar a entender</p>
+          <h1>Registrá tu plata rapido y abrí claridad en el mismo momento.</h1>
+          <p class="lead">
+            TodoAlDía existe para que cargues un movimiento en segundos, detectes en que se te va la plata y entres directo a la app Flutter sin perderte en una landing eterna.
+          </p>
+
+          <div class="hero-actions" aria-label="Accion principal del funnel">
+            <a
+              class="button button-primary button-large"
+              href={appUrl}
+              data-analytics="cta-primary-hero"
+              data-destination={siteConfig.appDestinationLabel}
+            >
+              {siteConfig.appCtaLabel}
+            </a>
+            <a class="text-link" href="#como-funciona" data-analytics="cta-secondary-how-it-works">
+              Ver como funciona
+            </a>
+          </div>
+
+          <p class="microcopy">CTA principal unica: llevarte a la app. El resto solo acompaña la decision.</p>
+        </div>
+
+        <aside class="funnel-card" aria-labelledby="funnel-title">
+          <p class="status-badge">Embudo actual</p>
+          <h2 id="funnel-title">Entrar, entender y avanzar sin ruido.</h2>
+          <p>
+            La promesa es concreta: menos carga mental para registrar, mas contexto util para decidir y una salida directa hacia la app.
+          </p>
+
+          <ul class="checkpoint-list" aria-label="Puntos de conversion">
+            <li><strong>Resultado:</strong> sabés rapido donde estas parado.</li>
+            <li><strong>Feedback:</strong> si falta algo, la app te lo dice sin trabarte.</li>
+            <li><strong>Accion:</strong> el CTA principal siempre apunta a la app Flutter.</li>
+          </ul>
+
+          <div class="inline-proof" role="list" aria-label="Pilares del producto">
+            <span role="listitem">Rapido</span>
+            <span role="listitem">Claro</span>
+            <span role="listitem">Recuperable</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="resultados-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Lo que cambia para vos</p>
+          <h2 id="resultados-title">La landing ahora vende una transformacion, no un catalogo.</h2>
+          <p>
+            Primero te muestra el beneficio concreto. Despues te da la evidencia justa para que abras la app y sigas el flujo real del producto.
+          </p>
+        </div>
+
+        <div class="card-grid">
+          {outcomes.map((outcome) => (
+            <article class="info-card">
+              <h3>{outcome.title}</h3>
+              <p>{outcome.description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" aria-labelledby="prueba-title">
+      <div class="container proof-layout">
+        <div class="section-heading compact">
+          <p class="eyebrow">Prueba rapida</p>
+          <h2 id="prueba-title">La propuesta se entiende en menos de un scroll.</h2>
+          <p>
+            Estas piezas sostienen la conversion sin competir con el CTA principal.
+          </p>
+        </div>
+
+        <ul class="proof-list">
+          {proofPoints.map((proofPoint) => (
+            <li>{proofPoint}</li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="como-funciona" aria-labelledby="como-funciona-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Como funciona</p>
+          <h2 id="como-funciona-title">El flujo acompaña la conversion hasta la app.</h2>
+          <p>
+            Cada paso comunica estado, reduce duda y deja claro cual es la siguiente accion correcta.
+          </p>
+        </div>
+
+        <ol class="step-list">
+          {steps.map((step) => (
+            <li class="step-card">
+              <h3>{step.title}</h3>
+              <p>{step.description}</p>
+            </li>
+          ))}
+        </ol>
+
+        <div class="feedback-panel" aria-labelledby="feedback-title">
+          <h3 id="feedback-title">Estados que empujan sin confundir</h3>
+          <p>
+            Si algo no cierra, la respuesta no es frenar al usuario: es explicarle que paso y como seguir sin perder contexto.
+          </p>
+          <ul>
+            <li>Mensajes de validacion concretos, cerca del problema y sin ambiguedad.</li>
+            <li>Feedback de guardado y correccion en el mismo flujo, sin pantallas muertas.</li>
+            <li>Empty states que invitan a cargar el primer movimiento.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="preguntas" aria-labelledby="preguntas-title">
+      <div class="container faq-shell">
+        <div class="section-heading compact">
+          <p class="eyebrow">Preguntas rapidas</p>
+          <h2 id="preguntas-title">Lo minimo para despejar objeciones y no distraer la conversion.</h2>
+        </div>
+
+        <div class="faq-list">
+          {faqs.map((faq) => (
+            <article class="faq-card">
+              <h3>{faq.question}</h3>
+              <p>{faq.answer}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="cta" aria-labelledby="cta-title">
+      <div class="container cta-box">
+        <div>
+          <p class="eyebrow">Accion principal</p>
+          <h2 id="cta-title">Si querés claridad financiera, el siguiente paso no es leer mas: es abrir la app.</h2>
+          <p>
+            El funnel queda listo para mandar trafico a una sola salida dominante. La URL de destino esta centralizada y los CTAs ya tienen hooks para medicion futura.
+          </p>
+        </div>
+
+        <div class="cta-actions">
+          <a
+            class="button button-primary button-large"
+            href={appUrl}
+            data-analytics="cta-primary-bottom"
+            data-destination={siteConfig.appDestinationLabel}
+          >
+            {siteConfig.appCtaLabel}
+          </a>
+          <a class="text-link" href="#top" data-analytics="cta-secondary-back-to-top">Volver arriba</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>TodoAlDía</p>
+      <p>Landing Astro enfocada en conversion, SEO tecnico y edicion simple.</p>
+    </div>
+  </footer>
+</BaseLayout>

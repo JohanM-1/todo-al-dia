@@ -1,0 +1,57 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  image?: string;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title = 'TodoAlDía | Registrá tu plata rápido y abrí la app',
+  description = 'TodoAlDía te ayuda a registrar gastos e ingresos en segundos para entender en qué se te va la plata y actuar hoy, sin fricción ni vueltas.',
+  canonical = '/',
+  image = '/social-card.svg',
+  structuredData,
+} = Astro.props;
+
+const canonicalUrl = new URL(canonical.trim() || '/', Astro.site);
+const socialImageUrl = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl.href} />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#f6f0e8" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TodoAlDía" />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl.href} />
+    <meta property="og:image" content={socialImageUrl.href} />
+    <meta property="og:image:alt" content="Vista promocional de TodoAlDía" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl.href} />
+
+    {structuredData && (
+      <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    )}
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
