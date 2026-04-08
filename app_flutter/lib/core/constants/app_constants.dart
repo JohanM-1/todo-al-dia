@@ -1,10 +1,9 @@
 // lib/core/constants/app_constants.dart
 class AppConstants {
   static const String appName = 'TodoAlDía';
-  static const String appVersion = '0.1.0';
 
   // Default values
-  static const String defaultCurrency = 'ARS';
+  static const String defaultCurrency = 'COP';
   static const String defaultAccount = 'Efectivo';
 
   // Voice
