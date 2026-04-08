@@ -27,30 +27,41 @@ class AppTheme {
     Color(0xFF4C6A7D),
   ];
 
-  static List<Color> get categoryColors => [
-        const Color(0xFF5E8BFF),
-        const Color(0xFF22B07D),
-        const Color(0xFFF39A52),
-        const Color(0xFF8F6CFF),
-        const Color(0xFFE15D8F),
-        const Color(0xFF3DBBCF),
-        const Color(0xFFF06D4F),
-        const Color(0xFF88715E),
-        const Color(0xFF5E7A8A),
-        const Color(0xFFB0C93A),
-      ];
+  static const List<Color> categoryColors = [
+    Color(0xFF5E8BFF),
+    Color(0xFF22B07D),
+    Color(0xFFF39A52),
+    Color(0xFF8F6CFF),
+    Color(0xFFE15D8F),
+    Color(0xFF3DBBCF),
+    Color(0xFFF06D4F),
+    Color(0xFF88715E),
+    Color(0xFF5E7A8A),
+    Color(0xFFB0C93A),
+  ];
+
+  static final Map<int, ThemeData> _lightThemeCache = <int, ThemeData>{};
+  static final Map<int, ThemeData> _darkThemeCache = <int, ThemeData>{};
 
   static ThemeData light({Color? primaryColor}) {
-    return _buildTheme(
-      brightness: Brightness.light,
-      primaryColor: primaryColor ?? defaultPrimaryColor,
+    final color = primaryColor ?? defaultPrimaryColor;
+    return _lightThemeCache.putIfAbsent(
+      color.toARGB32(),
+      () => _buildTheme(
+        brightness: Brightness.light,
+        primaryColor: color,
+      ),
     );
   }
 
   static ThemeData dark({Color? primaryColor}) {
-    return _buildTheme(
-      brightness: Brightness.dark,
-      primaryColor: primaryColor ?? defaultPrimaryColor,
+    final color = primaryColor ?? defaultPrimaryColor;
+    return _darkThemeCache.putIfAbsent(
+      color.toARGB32(),
+      () => _buildTheme(
+        brightness: Brightness.dark,
+        primaryColor: color,
+      ),
     );
   }
 
@@ -67,13 +78,13 @@ class AppTheme {
       primary: primaryColor,
     );
     final isDark = brightness == Brightness.dark;
-    final surface = isDark ? const Color(0xFF101317) : const Color(0xFFF5F7FB);
+    final surface = isDark ? const Color(0xFF0D1116) : const Color(0xFFF5F7FB);
     final surfaceHigh =
-        isDark ? const Color(0xFF171C22) : const Color(0xFFFFFFFF);
+        isDark ? const Color(0xFF151B22) : const Color(0xFFFFFFFF);
     final outline =
-        isDark ? Colors.white.withValues(alpha: 0.10) : const Color(0xFFD8DFEA);
+        isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFD8DFEA);
     final subdued =
-        isDark ? Colors.white.withValues(alpha: 0.66) : const Color(0xFF607080);
+        isDark ? Colors.white.withValues(alpha: 0.72) : const Color(0xFF607080);
     final textTheme = _textTheme(brightness).apply(
       bodyColor: scheme.onSurface,
       displayColor: scheme.onSurface,
@@ -128,9 +139,10 @@ class AppTheme {
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: surfaceHigh.withValues(alpha: isDark ? 0.90 : 0.96),
-        shadowColor: Colors.black.withValues(alpha: isDark ? 0.22 : 0.06),
-        indicatorColor: scheme.primaryContainer.withValues(alpha: 0.75),
+        backgroundColor: surfaceHigh.withValues(alpha: isDark ? 0.94 : 0.96),
+        shadowColor: Colors.black.withValues(alpha: isDark ? 0.18 : 0.06),
+        indicatorColor:
+            scheme.primaryContainer.withValues(alpha: isDark ? 0.54 : 0.70),
         surfaceTintColor: Colors.transparent,
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
@@ -151,7 +163,8 @@ class AppTheme {
       ),
       navigationRailTheme: NavigationRailThemeData(
         backgroundColor: Colors.transparent,
-        indicatorColor: scheme.primaryContainer.withValues(alpha: 0.78),
+        indicatorColor:
+            scheme.primaryContainer.withValues(alpha: isDark ? 0.56 : 0.74),
         minWidth: 80,
         minExtendedWidth: 228,
         selectedIconTheme: IconThemeData(color: scheme.primary, size: 22),

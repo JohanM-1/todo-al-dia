@@ -19,6 +19,7 @@ import 'presentation/bloc/settings/settings_state.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  ErrorWidget.builder = AppErrorHandler.buildErrorWidget;
 
   // Initialize Hive database
   final database = AppDatabase.instance;
@@ -72,56 +73,41 @@ class TodoAlDiaApp extends StatelessWidget {
       ],
       child: BlocProvider(
         create: (context) => SettingsBloc(db: database)..add(LoadSettings()),
-        child: BlocBuilder<SettingsBloc, SettingsState>(
-          buildWhen: (previous, current) =>
-              previous.themeColor != current.themeColor ||
-              previous.themeMode != current.themeMode ||
-              previous.languageCode != current.languageCode,
-          builder: (context, settingsState) {
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) => HomeBloc(
-                    movementRepository: movementRepository,
-                    categoryRepository: categoryRepository,
-                  ),
-                ),
-                BlocProvider(
-                  create: (context) => DashboardBloc(
-                    movementRepository: movementRepository,
-                    categoryRepository: categoryRepository,
-                    goalRepository: goalRepository,
-                  ),
-                ),
-                BlocProvider(
-                  create: (context) => MovementBloc(
-                    movementRepository: movementRepository,
-                    categoryRepository: categoryRepository,
-                  ),
-                ),
-                BlocProvider(
-                  create: (context) => BudgetBloc(
-                    budgetRepository: budgetRepository,
-                    movementRepository: movementRepository,
-                    categoryRepository: categoryRepository,
-                  ),
-                ),
-                BlocProvider(
-                  create: (context) => GoalBloc(
-                    goalRepository: goalRepository,
-                  ),
-                ),
-              ],
-              child: _AppContent(
-                accountRepository: accountRepository,
-                categoryRepository: categoryRepository,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => HomeBloc(
                 movementRepository: movementRepository,
-                budgetRepository: budgetRepository,
-                goalRepository: goalRepository,
-                settingsState: settingsState,
+                categoryRepository: categoryRepository,
               ),
-            );
-          },
+            ),
+            BlocProvider(
+              create: (context) => DashboardBloc(
+                movementRepository: movementRepository,
+                categoryRepository: categoryRepository,
+                goalRepository: goalRepository,
+              ),
+            ),
+            BlocProvider(
+              create: (context) => MovementBloc(
+                movementRepository: movementRepository,
+                categoryRepository: categoryRepository,
+              ),
+            ),
+            BlocProvider(
+              create: (context) => BudgetBloc(
+                budgetRepository: budgetRepository,
+                movementRepository: movementRepository,
+                categoryRepository: categoryRepository,
+              ),
+            ),
+            BlocProvider(
+              create: (context) => GoalBloc(
+                goalRepository: goalRepository,
+              ),
+            ),
+          ],
+          child: const _AppContent(),
         ),
       ),
     );
@@ -129,24 +115,14 @@ class TodoAlDiaApp extends StatelessWidget {
 }
 
 class _AppContent extends StatelessWidget {
-  final AccountRepository accountRepository;
-  final CategoryRepository categoryRepository;
-  final MovementRepository movementRepository;
-  final BudgetRepository budgetRepository;
-  final GoalRepository goalRepository;
-  final SettingsState settingsState;
-
-  const _AppContent({
-    required this.accountRepository,
-    required this.categoryRepository,
-    required this.movementRepository,
-    required this.budgetRepository,
-    required this.goalRepository,
-    required this.settingsState,
-  });
+  const _AppContent();
 
   @override
   Widget build(BuildContext context) {
+    final settingsState = context.select<SettingsBloc, SettingsState>(
+      (bloc) => bloc.state,
+    );
+
     // Determine locale based on settings
     Locale? locale;
     if (settingsState.languageCode != null &&
@@ -155,7 +131,7 @@ class _AppContent extends StatelessWidget {
     }
 
     return MaterialApp.router(
-      title: 'TodoAlDía',
+      onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(primaryColor: settingsState.themeColor),
       darkTheme: AppTheme.dark(primaryColor: settingsState.themeColor),
@@ -164,13 +140,7 @@ class _AppContent extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       routerConfig: appRouter,
-      // Global error widget for uncaught exceptions
-      builder: (context, child) {
-        ErrorWidget.builder = (details) {
-          return AppErrorHandler.buildErrorWidget(details);
-        };
-        return child ?? const SizedBox.shrink();
-      },
+      builder: (context, child) => child ?? const SizedBox.shrink(),
     );
   }
 }

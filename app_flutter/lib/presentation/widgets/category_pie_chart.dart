@@ -21,6 +21,22 @@ class CategoryPieChart extends StatefulWidget {
 class _CategoryPieChartState extends State<CategoryPieChart> {
   int touchedIndex = -1;
 
+  late Map<int, CategoryEntity> _categoriesById;
+
+  @override
+  void initState() {
+    super.initState();
+    _categoriesById = _buildCategoriesById(widget.categories);
+  }
+
+  @override
+  void didUpdateWidget(covariant CategoryPieChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.categories != widget.categories) {
+      _categoriesById = _buildCategoriesById(widget.categories);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.expensesByCategory.isEmpty) {
@@ -52,26 +68,33 @@ class _CategoryPieChartState extends State<CategoryPieChart> {
             const SizedBox(height: 16),
             SizedBox(
               height: 200,
-              child: PieChart(
-                PieChartData(
-                  pieTouchData: PieTouchData(
-                    touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                      setState(() {
-                        if (!event.isInterestedForInteractions ||
-                            pieTouchResponse == null ||
-                            pieTouchResponse.touchedSection == null) {
-                          touchedIndex = -1;
+              child: RepaintBoundary(
+                child: PieChart(
+                  PieChartData(
+                    pieTouchData: PieTouchData(
+                      touchCallback: (event, pieTouchResponse) {
+                        final nextTouchedIndex =
+                            !event.isInterestedForInteractions ||
+                                    pieTouchResponse == null ||
+                                    pieTouchResponse.touchedSection == null
+                                ? -1
+                                : pieTouchResponse
+                                    .touchedSection!.touchedSectionIndex;
+
+                        if (nextTouchedIndex == touchedIndex) {
                           return;
                         }
-                        touchedIndex = pieTouchResponse
-                            .touchedSection!.touchedSectionIndex;
-                      });
-                    },
+
+                        setState(() {
+                          touchedIndex = nextTouchedIndex;
+                        });
+                      },
+                    ),
+                    borderData: FlBorderData(show: false),
+                    sectionsSpace: 2,
+                    centerSpaceRadius: 40,
+                    sections: _buildSections(),
                   ),
-                  borderData: FlBorderData(show: false),
-                  sectionsSpace: 2,
-                  centerSpaceRadius: 40,
-                  sections: _buildSections(),
                 ),
               ),
             ),
@@ -95,10 +118,7 @@ class _CategoryPieChartState extends State<CategoryPieChart> {
       final isTouched = index == touchedIndex;
 
       // Find category name
-      final category = widget.categories.firstWhere(
-        (c) => c.id == categoryId,
-        orElse: () => const CategoryEntity(name: 'Otros'),
-      );
+      final category = _categoryFor(categoryId);
 
       return PieChartSectionData(
         color: AppTheme.categoryColors[
@@ -120,10 +140,7 @@ class _CategoryPieChartState extends State<CategoryPieChart> {
       spacing: 16,
       runSpacing: 8,
       children: widget.expensesByCategory.entries.map((entry) {
-        final category = widget.categories.firstWhere(
-          (c) => c.id == entry.key,
-          orElse: () => const CategoryEntity(name: 'Otros'),
-        );
+        final category = _categoryFor(entry.key);
 
         return Row(
           mainAxisSize: MainAxisSize.min,
@@ -146,5 +163,17 @@ class _CategoryPieChartState extends State<CategoryPieChart> {
         );
       }).toList(),
     );
+  }
+
+  Map<int, CategoryEntity> _buildCategoriesById(
+      List<CategoryEntity> categories) {
+    return {
+      for (final category in categories)
+        if (category.id != null) category.id!: category,
+    };
+  }
+
+  CategoryEntity _categoryFor(int categoryId) {
+    return _categoriesById[categoryId] ?? const CategoryEntity(name: 'Otros');
   }
 }

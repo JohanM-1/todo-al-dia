@@ -31,10 +31,38 @@ class GlassCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final disableEffects =
+        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
     final shape = borderRadius ?? BorderRadius.circular(AppTheme.radiusMedium);
     final fallbackBackground = isDark
-        ? Colors.white.withValues(alpha: 0.07)
+        ? const Color(0xFF151B22).withValues(alpha: 0.88)
         : Colors.white.withValues(alpha: opacity);
+    final effectiveBlur = disableEffects ? 0.0 : blur;
+
+    final content = DecoratedBox(
+      decoration: BoxDecoration(
+        color: backgroundColor ?? fallbackBackground,
+        borderRadius: shape,
+        border: border ??
+            Border.all(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.08)
+                  : Colors.white.withValues(alpha: 0.70),
+            ),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withValues(alpha: isDark ? 0.02 : 0.36),
+            Colors.white.withValues(alpha: isDark ? 0.00 : 0.12),
+          ],
+        ),
+      ),
+      child: Padding(
+        padding: padding ?? const EdgeInsets.all(20),
+        child: child,
+      ),
+    );
 
     return Container(
       margin: margin,
@@ -42,41 +70,23 @@ class GlassCard extends StatelessWidget {
         borderRadius: shape,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.18 : 0.05),
-            blurRadius: 28,
-            offset: const Offset(0, 10),
+            color: Colors.black.withValues(alpha: isDark ? 0.16 : 0.05),
+            blurRadius: 22,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: ClipRRect(
         borderRadius: shape,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: backgroundColor ?? fallbackBackground,
-              borderRadius: shape,
-              border: border ??
-                  Border.all(
-                    color: isDark
-                        ? Colors.white.withValues(alpha: 0.12)
-                        : Colors.white.withValues(alpha: 0.70),
-                  ),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withValues(alpha: isDark ? 0.07 : 0.46),
-                  Colors.white.withValues(alpha: isDark ? 0.03 : 0.18),
-                ],
+        child: effectiveBlur <= 0
+            ? content
+            : BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: effectiveBlur,
+                  sigmaY: effectiveBlur,
+                ),
+                child: content,
               ),
-            ),
-            child: Padding(
-              padding: padding ?? const EdgeInsets.all(20),
-              child: child,
-            ),
-          ),
-        ),
       ),
     );
   }

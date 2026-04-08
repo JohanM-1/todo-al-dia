@@ -1,9 +1,11 @@
 // lib/presentation/widgets/voice_recorder_widget.dart
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../../services/voice_service.dart';
 
 class VoiceRecorderWidget extends StatefulWidget {
-  final Function(VoiceResult) onVoiceResult;
+  final ValueChanged<VoiceResult> onVoiceResult;
   final VoidCallback? onError;
   final bool showTextFallback;
 
@@ -38,7 +40,7 @@ class _VoiceRecorderWidgetState extends State<VoiceRecorderWidget>
     _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
-    _initializeVoice();
+    unawaited(_initializeVoice());
   }
 
   Future<void> _initializeVoice() async {
@@ -53,11 +55,14 @@ class _VoiceRecorderWidgetState extends State<VoiceRecorderWidget>
   @override
   void dispose() {
     _pulseController.dispose();
-    _voiceService.stopListening();
+    unawaited(_voiceService.stopListening());
     super.dispose();
   }
 
   Future<void> _toggleListening() async {
+    final disableAnimations =
+        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+
     if (_isListening) {
       await _voiceService.stopListening();
       if (mounted) {
@@ -108,7 +113,9 @@ class _VoiceRecorderWidgetState extends State<VoiceRecorderWidget>
         setState(() {
           _isListening = true;
         });
-        _pulseController.repeat(reverse: true); // ignore: unawaited_futures
+        if (!disableAnimations) {
+          _pulseController.repeat(reverse: true); // ignore: unawaited_futures
+        }
       }
     }
   }
