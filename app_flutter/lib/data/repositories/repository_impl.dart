@@ -55,7 +55,7 @@ class AccountRepositoryImpl implements AccountRepository {
     return AccountEntity(
       id: map['id'] as int?,
       name: map['name'] as String,
-      currency: map['currency'] as String? ?? 'ARS',
+      currency: map['currency'] as String? ?? 'COP',
       balance: (map['balance'] as num?)?.toDouble() ?? 0.0,
       isActive: (map['is_active'] as int?) == 1,
       createdAt: DateTime.tryParse(map['created_at'] as String? ?? '') ??
@@ -68,6 +68,8 @@ class CategoryRepositoryImpl implements CategoryRepository {
   final AppDatabase _db;
 
   CategoryRepositoryImpl(this._db);
+
+  static const _leadingWhitespacePattern = r'^\s+';
 
   @override
   Future<List<CategoryEntity>> getAllCategories() async {
@@ -94,8 +96,10 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
   @override
   Future<int> createCategory(CategoryEntity category) {
+    final normalizedName =
+        _normalizeCategoryName(category.name, iconsToStrip: [category.icon]);
     return _db.insertCategory({
-      'name': category.name,
+      'name': normalizedName,
       'icon': category.icon,
       'color_index': category.colorIndex,
       'is_system': category.isSystem ? 1 : 0,
@@ -111,8 +115,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
       (c) => c['id'] == category.id,
       orElse: () => {},
     );
+    final normalizedName = _normalizeCategoryName(
+      category.name,
+      iconsToStrip: [category.icon, cat['icon'] as String?],
+    );
     final result = await _db.updateCategory(category.id!, {
-      'name': category.name,
+      'name': normalizedName,
       'icon': category.icon,
       'color_index': category.colorIndex,
       'is_system': category.isSystem ? 1 : 0,
@@ -123,14 +131,40 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   CategoryEntity _mapToEntity(Map<String, dynamic> map) {
+    final icon = map['icon'] as String? ?? '📁';
     return CategoryEntity(
       id: map['id'] as int?,
-      name: map['name'] as String,
-      icon: map['icon'] as String? ?? '📁',
+      name: _normalizeCategoryName(
+        map['name'] as String? ?? '',
+        iconsToStrip: [icon],
+      ),
+      icon: icon,
       colorIndex: map['color_index'] as int? ?? 0,
       isSystem: (map['is_system'] as int?) == 1,
       isIncome: (map['is_income'] as int?) == 1,
     );
+  }
+
+  String _normalizeCategoryName(
+    String rawName, {
+    required Iterable<String?> iconsToStrip,
+  }) {
+    var normalizedName = rawName.trim();
+    if (normalizedName.isEmpty) {
+      return normalizedName;
+    }
+
+    for (final icon in iconsToStrip.whereType<String>()) {
+      if (icon.isEmpty || !normalizedName.startsWith(icon)) {
+        continue;
+      }
+
+      normalizedName = normalizedName
+          .substring(icon.length)
+          .replaceFirst(RegExp(_leadingWhitespacePattern), '');
+    }
+
+    return normalizedName;
   }
 }
 
