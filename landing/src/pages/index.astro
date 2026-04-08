@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { defaultLocale, landingContent } from '../config/i18n';
 import { siteConfig } from '../config/site';
 
-const title = 'TodoAlDía | Registrá tu plata rápido y abrí la app';
-const description =
-  'TodoAlDía te ayuda a registrar gastos e ingresos en segundos para entender en qué se te va la plata y actuar hoy, sin fricción ni vueltas.';
-
 const appUrl = siteConfig.appUrl;
+const content = landingContent[defaultLocale];
+const title = content.seo.title;
+const description = content.seo.description;
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -14,7 +14,7 @@ const structuredData = {
   name: 'TodoAlDía',
   applicationCategory: 'FinanceApplication',
   operatingSystem: 'Android, Web',
-  inLanguage: 'es-AR',
+  inLanguage: 'en',
   description,
   url: 'https://todoaldia.app/',
   downloadUrl: appUrl,
@@ -23,98 +23,48 @@ const structuredData = {
     price: '0',
     priceCurrency: 'ARS',
   },
-  featureList: ['Registro rapido', 'Resumen claro', 'Seguimiento de objetivos'],
   potentialAction: {
     '@type': 'ViewAction',
-    name: siteConfig.appCtaLabel,
+    name: content.ctas.app,
     target: appUrl,
   },
+  featureList: content.structuredData.featureList,
 };
-
-const outcomes = [
-  {
-    title: 'Registrás antes de olvidarte',
-    description:
-      'Anotá un gasto o ingreso en segundos y evitá el clásico "después lo cargo" que nunca pasa.',
-  },
-  {
-    title: 'Ves qué está pasando hoy',
-    description:
-      'Balance, categorías y resumen mensual para detectar rápido dónde se te va la plata.',
-  },
-  {
-    title: 'Ajustás sin perder el ritmo',
-    description:
-      'Metas y presupuestos visibles para corregir a tiempo, sin planillas ni pantallas cargadas.',
-  },
-];
-
-const proofPoints = [
-  'Registro por voz o texto con correccion rapida.',
-  'Resumen del mes y balance actual sin ruido.',
-  'Presupuestos, metas y contexto util para decidir.',
-  'Base lista para Android y Web desde la misma app Flutter.',
-];
-
-const steps = [
-  {
-    title: '1. Cargás el movimiento',
-    description:
-      'Decís o escribís qué pasó. Si falta algo importante, la app te pide solo ese dato y seguís.',
-  },
-  {
-    title: '2. Confirmás sin frenar el flujo',
-    description:
-      'Recibís feedback inmediato sobre lo entendido y corregís sin rehacer todo desde cero.',
-  },
-  {
-    title: '3. Actuás con claridad',
-    description:
-      'Abrís la app y ves cuánto tenés, qué te está drenando y cómo venís con tus objetivos.',
-  },
-];
-
-const faqs = [
-  {
-    question: '¿Qué hago primero?',
-    answer: 'Abrís la app y registrás tu primer gasto o ingreso. La landing existe para llevarte a esa accion cuanto antes.',
-  },
-  {
-    question: '¿Qué promete TodoAlDia?',
-    answer: 'Menos friccion para cargar movimientos y mas claridad para decidir con tu plata en el dia a dia.',
-  },
-  {
-    question: '¿La URL de la app se puede cambiar facil?',
-    answer: 'Si. Quedo centralizada en `landing/src/config/site.ts` para ajustar el destino sin tocar el resto del funnel.',
-  },
-];
 ---
 
-<BaseLayout title={title} description={description} canonical="/" structuredData={structuredData}>
-  <a class="skip-link" href="#contenido">Saltar al contenido principal</a>
+<BaseLayout title={title} description={description} canonical="/" lang={content.htmlLang} structuredData={structuredData}>
+  <a id="skip-link" class="skip-link" href="#contenido">{content.a11y.skipToContent}</a>
 
   <header class="site-header">
     <div class="container header-inner">
-      <a class="brand" href="#top" aria-label="Ir al inicio de TodoAlDía">
+      <a id="brand-link" class="brand" href="#top" aria-label={content.a11y.brandHome}>
         <span class="brand-mark" aria-hidden="true">TD</span>
         <span>TodoAlDía</span>
       </a>
 
-      <nav aria-label="Navegacion principal">
+      <nav id="main-nav" aria-label={content.a11y.mainNav}>
         <ul class="nav-list">
-          <li><a href="#como-funciona">Como funciona</a></li>
-          <li><a href="#preguntas">Preguntas</a></li>
+          <li><a id="nav-how-it-works" href="#como-funciona">{content.nav.howItWorks}</a></li>
+          <li><a id="nav-faq" href="#preguntas">{content.nav.faq}</a></li>
         </ul>
       </nav>
 
-      <a
-        class="button button-primary header-cta"
-        href={appUrl}
-        data-analytics="cta-primary-header"
-        data-destination={siteConfig.appDestinationLabel}
-      >
-        {siteConfig.appCtaShortLabel}
-      </a>
+      <div class="header-actions">
+        <div id="locale-switcher" class="locale-switcher" aria-label={content.a11y.localeSwitcher}>
+          <button class="locale-button" type="button" data-locale-button="en">EN</button>
+          <button class="locale-button" type="button" data-locale-button="es">ES</button>
+        </div>
+
+        <a
+          class="button button-primary header-cta"
+          href={appUrl}
+          data-analytics="cta-primary-header"
+          data-destination={content.analytics.destinationLabel}
+          data-cta="header"
+        >
+          {content.ctas.appShort}
+        </a>
+      </div>
     </div>
   </header>
 
@@ -122,46 +72,46 @@ const faqs = [
     <section class="hero section" id="top">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow">Una app para pasar de registrar a entender</p>
-          <h1>Registrá tu plata rapido y abrí claridad en el mismo momento.</h1>
-          <p class="lead">
-            TodoAlDía existe para que cargues un movimiento en segundos, detectes en que se te va la plata y entres directo a la app Flutter sin perderte en una landing eterna.
-          </p>
+          <p id="hero-eyebrow" class="eyebrow">{content.hero.eyebrow}</p>
+          <h1 id="hero-title">{content.hero.title}</h1>
+          <p id="hero-lead" class="lead">{content.hero.lead}</p>
 
-          <div class="hero-actions" aria-label="Accion principal del funnel">
+          <div id="hero-actions" class="hero-actions" aria-label={content.a11y.heroActions}>
             <a
               class="button button-primary button-large"
               href={appUrl}
               data-analytics="cta-primary-hero"
-              data-destination={siteConfig.appDestinationLabel}
+              data-destination={content.analytics.destinationLabel}
+              data-cta="hero"
             >
-              {siteConfig.appCtaLabel}
+              {content.ctas.app}
             </a>
-            <a class="text-link" href="#como-funciona" data-analytics="cta-secondary-how-it-works">
-              Ver como funciona
+            <a id="cta-see-how" class="text-link" href="#como-funciona" data-analytics="cta-secondary-how-it-works">
+              {content.ctas.seeHow}
             </a>
           </div>
 
-          <p class="microcopy">CTA principal unica: llevarte a la app. El resto solo acompaña la decision.</p>
+          <p id="hero-microcopy" class="microcopy">{content.hero.microcopy}</p>
         </div>
 
         <aside class="funnel-card" aria-labelledby="funnel-title">
-          <p class="status-badge">Embudo actual</p>
-          <h2 id="funnel-title">Entrar, entender y avanzar sin ruido.</h2>
-          <p>
-            La promesa es concreta: menos carga mental para registrar, mas contexto util para decidir y una salida directa hacia la app.
-          </p>
+          <img id="hero-preview" class="hero-preview" src="/hero-preview.svg" alt={content.a11y.heroPreviewAlt} loading="eager" />
+          <p id="sidecard-badge" class="status-badge">{content.sideCard.badge}</p>
+          <h2 id="funnel-title">{content.sideCard.title}</h2>
+          <p id="sidecard-body">{content.sideCard.body}</p>
 
-          <ul class="checkpoint-list" aria-label="Puntos de conversion">
-            <li><strong>Resultado:</strong> sabés rapido donde estas parado.</li>
-            <li><strong>Feedback:</strong> si falta algo, la app te lo dice sin trabarte.</li>
-            <li><strong>Accion:</strong> el CTA principal siempre apunta a la app Flutter.</li>
+          <ul id="checkpoint-list" class="checkpoint-list" aria-label={content.a11y.checkpoints}>
+            {content.sideCard.checkpoints.map((checkpoint) => (
+              <li>
+                <strong>{checkpoint.label}:</strong> {checkpoint.text}
+              </li>
+            ))}
           </ul>
 
-          <div class="inline-proof" role="list" aria-label="Pilares del producto">
-            <span role="listitem">Rapido</span>
-            <span role="listitem">Claro</span>
-            <span role="listitem">Recuperable</span>
+          <div id="sidecard-pills" class="inline-proof" role="list" aria-label={content.a11y.pills}>
+            {content.sideCard.pills.map((pill) => (
+              <span role="listitem">{pill}</span>
+            ))}
           </div>
         </aside>
       </div>
@@ -170,18 +120,16 @@ const faqs = [
     <section class="section" aria-labelledby="resultados-title">
       <div class="container">
         <div class="section-heading">
-          <p class="eyebrow">Lo que cambia para vos</p>
-          <h2 id="resultados-title">La landing ahora vende una transformacion, no un catalogo.</h2>
-          <p>
-            Primero te muestra el beneficio concreto. Despues te da la evidencia justa para que abras la app y sigas el flujo real del producto.
-          </p>
+          <p id="benefits-eyebrow" class="eyebrow">{content.benefits.eyebrow}</p>
+          <h2 id="resultados-title">{content.benefits.title}</h2>
+          <p id="benefits-intro">{content.benefits.intro}</p>
         </div>
 
-        <div class="card-grid">
-          {outcomes.map((outcome) => (
+        <div id="benefits-grid" class="card-grid">
+          {content.benefits.items.map((item) => (
             <article class="info-card">
-              <h3>{outcome.title}</h3>
-              <p>{outcome.description}</p>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
             </article>
           ))}
         </div>
@@ -191,16 +139,14 @@ const faqs = [
     <section class="section section-alt" aria-labelledby="prueba-title">
       <div class="container proof-layout">
         <div class="section-heading compact">
-          <p class="eyebrow">Prueba rapida</p>
-          <h2 id="prueba-title">La propuesta se entiende en menos de un scroll.</h2>
-          <p>
-            Estas piezas sostienen la conversion sin competir con el CTA principal.
-          </p>
+          <p id="features-eyebrow" class="eyebrow">{content.features.eyebrow}</p>
+          <h2 id="prueba-title">{content.features.title}</h2>
+          <p id="features-intro">{content.features.intro}</p>
         </div>
 
-        <ul class="proof-list">
-          {proofPoints.map((proofPoint) => (
-            <li>{proofPoint}</li>
+        <ul id="features-list" class="proof-list">
+          {content.features.points.map((point) => (
+            <li>{point}</li>
           ))}
         </ul>
       </div>
@@ -209,15 +155,13 @@ const faqs = [
     <section class="section" id="como-funciona" aria-labelledby="como-funciona-title">
       <div class="container">
         <div class="section-heading">
-          <p class="eyebrow">Como funciona</p>
-          <h2 id="como-funciona-title">El flujo acompaña la conversion hasta la app.</h2>
-          <p>
-            Cada paso comunica estado, reduce duda y deja claro cual es la siguiente accion correcta.
-          </p>
+          <p id="steps-eyebrow" class="eyebrow">{content.steps.eyebrow}</p>
+          <h2 id="como-funciona-title">{content.steps.title}</h2>
+          <p id="steps-intro">{content.steps.intro}</p>
         </div>
 
-        <ol class="step-list">
-          {steps.map((step) => (
+        <ol id="steps-list" class="step-list">
+          {content.steps.items.map((step) => (
             <li class="step-card">
               <h3>{step.title}</h3>
               <p>{step.description}</p>
@@ -226,14 +170,12 @@ const faqs = [
         </ol>
 
         <div class="feedback-panel" aria-labelledby="feedback-title">
-          <h3 id="feedback-title">Estados que empujan sin confundir</h3>
-          <p>
-            Si algo no cierra, la respuesta no es frenar al usuario: es explicarle que paso y como seguir sin perder contexto.
-          </p>
-          <ul>
-            <li>Mensajes de validacion concretos, cerca del problema y sin ambiguedad.</li>
-            <li>Feedback de guardado y correccion en el mismo flujo, sin pantallas muertas.</li>
-            <li>Empty states que invitan a cargar el primer movimiento.</li>
+          <h3 id="feedback-title">{content.steps.panel.title}</h3>
+          <p id="feedback-body">{content.steps.panel.body}</p>
+          <ul id="feedback-list">
+            {content.steps.panel.points.map((point) => (
+              <li>{point}</li>
+            ))}
           </ul>
         </div>
       </div>
@@ -242,12 +184,12 @@ const faqs = [
     <section class="section" id="preguntas" aria-labelledby="preguntas-title">
       <div class="container faq-shell">
         <div class="section-heading compact">
-          <p class="eyebrow">Preguntas rapidas</p>
-          <h2 id="preguntas-title">Lo minimo para despejar objeciones y no distraer la conversion.</h2>
+          <p id="faq-eyebrow" class="eyebrow">{content.faq.eyebrow}</p>
+          <h2 id="preguntas-title">{content.faq.title}</h2>
         </div>
 
-        <div class="faq-list">
-          {faqs.map((faq) => (
+        <div id="faq-list" class="faq-list">
+          {content.faq.items.map((faq) => (
             <article class="faq-card">
               <h3>{faq.question}</h3>
               <p>{faq.answer}</p>
@@ -260,11 +202,9 @@ const faqs = [
     <section class="section section-alt" id="cta" aria-labelledby="cta-title">
       <div class="container cta-box">
         <div>
-          <p class="eyebrow">Accion principal</p>
-          <h2 id="cta-title">Si querés claridad financiera, el siguiente paso no es leer mas: es abrir la app.</h2>
-          <p>
-            El funnel queda listo para mandar trafico a una sola salida dominante. La URL de destino esta centralizada y los CTAs ya tienen hooks para medicion futura.
-          </p>
+          <p id="closing-eyebrow" class="eyebrow">{content.closing.eyebrow}</p>
+          <h2 id="cta-title">{content.closing.title}</h2>
+          <p id="closing-body">{content.closing.body}</p>
         </div>
 
         <div class="cta-actions">
@@ -272,11 +212,12 @@ const faqs = [
             class="button button-primary button-large"
             href={appUrl}
             data-analytics="cta-primary-bottom"
-            data-destination={siteConfig.appDestinationLabel}
+            data-destination={content.analytics.destinationLabel}
+            data-cta="bottom"
           >
-            {siteConfig.appCtaLabel}
+            {content.ctas.app}
           </a>
-          <a class="text-link" href="#top" data-analytics="cta-secondary-back-to-top">Volver arriba</a>
+          <a id="cta-back-to-top" class="text-link" href="#top" data-analytics="cta-secondary-back-to-top">{content.ctas.backToTop}</a>
         </div>
       </div>
     </section>
@@ -285,7 +226,276 @@ const faqs = [
   <footer class="site-footer">
     <div class="container footer-inner">
       <p>TodoAlDía</p>
-      <p>Landing Astro enfocada en conversion, SEO tecnico y edicion simple.</p>
+      <p id="footer-tagline">{content.footer.tagline}</p>
     </div>
   </footer>
+
+  <script
+    is:inline
+    define:vars={{
+      translations: landingContent,
+      defaultLocale,
+    }}
+  >
+    const storageKey = 'todoaldia:landing-locale';
+
+    function resolveLocale(value) {
+      const normalized = value?.trim().toLowerCase();
+
+      if (!normalized) {
+        return defaultLocale;
+      }
+
+      if (normalized === 'es' || normalized.startsWith('es-')) {
+        return 'es';
+      }
+
+      return 'en';
+    }
+
+    function detectLocale() {
+      const params = new URLSearchParams(window.location.search);
+      const queryLocale = params.get('lang');
+
+      if (queryLocale) {
+        return resolveLocale(queryLocale);
+      }
+
+      const storedLocale = window.localStorage.getItem(storageKey);
+
+      if (storedLocale) {
+        return resolveLocale(storedLocale);
+      }
+
+      const browserLocales = [...(navigator.languages || []), navigator.language].filter(Boolean);
+
+      for (const locale of browserLocales) {
+        const resolved = resolveLocale(locale);
+
+        if (resolved === 'es') {
+          return 'es';
+        }
+      }
+
+      return defaultLocale;
+    }
+
+    function setText(id, value) {
+      const node = document.getElementById(id);
+
+      if (node) {
+        node.textContent = value;
+      }
+    }
+
+    function setAttr(id, attribute, value) {
+      const node = document.getElementById(id);
+
+      if (node) {
+        node.setAttribute(attribute, value);
+      }
+    }
+
+    function renderCheckpoints(items) {
+      const list = document.getElementById('checkpoint-list');
+
+      if (!list) {
+        return;
+      }
+
+      list.replaceChildren(
+        ...items.map((item) => {
+          const li = document.createElement('li');
+          const strong = document.createElement('strong');
+
+          strong.textContent = `${item.label}:`;
+          li.append(strong, ` ${item.text}`);
+
+          return li;
+        }),
+      );
+    }
+
+    function renderPills(items) {
+      const list = document.getElementById('sidecard-pills');
+
+      if (!list) {
+        return;
+      }
+
+      list.replaceChildren(
+        ...items.map((item) => {
+          const span = document.createElement('span');
+
+          span.setAttribute('role', 'listitem');
+          span.textContent = item;
+
+          return span;
+        }),
+      );
+    }
+
+    function renderCards(containerId, items, cardClass) {
+      const container = document.getElementById(containerId);
+
+      if (!container) {
+        return;
+      }
+
+      container.replaceChildren(
+        ...items.map((item) => {
+          const article = document.createElement('article');
+          const title = document.createElement('h3');
+          const description = document.createElement('p');
+
+          article.className = cardClass;
+          title.textContent = item.title;
+          description.textContent = item.description;
+          article.append(title, description);
+
+          return article;
+        }),
+      );
+    }
+
+    function renderStringList(containerId, items) {
+      const container = document.getElementById(containerId);
+
+      if (!container) {
+        return;
+      }
+
+      container.replaceChildren(
+        ...items.map((item) => {
+          const li = document.createElement('li');
+
+          li.textContent = item;
+          return li;
+        }),
+      );
+    }
+
+    function renderFaqs(items) {
+      const container = document.getElementById('faq-list');
+
+      if (!container) {
+        return;
+      }
+
+      container.replaceChildren(
+        ...items.map((item) => {
+          const article = document.createElement('article');
+          const question = document.createElement('h3');
+          const answer = document.createElement('p');
+
+          article.className = 'faq-card';
+          question.textContent = item.question;
+          answer.textContent = item.answer;
+          article.append(question, answer);
+
+          return article;
+        }),
+      );
+    }
+
+    function setMeta(selector, value) {
+      const node = document.querySelector(selector);
+
+      if (node) {
+        node.setAttribute('content', value);
+      }
+    }
+
+    function updateLocaleButtons(locale) {
+      document.querySelectorAll('[data-locale-button]').forEach((button) => {
+        const isActive = button.getAttribute('data-locale-button') === locale;
+
+        button.setAttribute('aria-pressed', String(isActive));
+        button.toggleAttribute('data-active', isActive);
+      });
+    }
+
+    function applyLocale(locale, persist = true) {
+      const copy = translations[locale] || translations[defaultLocale];
+
+      document.documentElement.lang = copy.htmlLang;
+      document.title = copy.seo.title;
+
+      setMeta('meta[name="description"]', copy.seo.description);
+      setMeta('meta[property="og:title"]', copy.seo.title);
+      setMeta('meta[property="og:description"]', copy.seo.description);
+      setMeta('meta[property="og:locale"]', copy.htmlLang.startsWith('es') ? 'es_AR' : 'en_US');
+      setMeta('meta[name="twitter:title"]', copy.seo.title);
+      setMeta('meta[name="twitter:description"]', copy.seo.description);
+
+      setText('skip-link', copy.a11y.skipToContent);
+      setAttr('brand-link', 'aria-label', copy.a11y.brandHome);
+      setAttr('main-nav', 'aria-label', copy.a11y.mainNav);
+      setAttr('locale-switcher', 'aria-label', copy.a11y.localeSwitcher);
+      setAttr('hero-preview', 'alt', copy.a11y.heroPreviewAlt);
+      setAttr('hero-actions', 'aria-label', copy.a11y.heroActions);
+      setAttr('checkpoint-list', 'aria-label', copy.a11y.checkpoints);
+      setAttr('sidecard-pills', 'aria-label', copy.a11y.pills);
+      setText('nav-how-it-works', copy.nav.howItWorks);
+      setText('nav-faq', copy.nav.faq);
+      setText('hero-eyebrow', copy.hero.eyebrow);
+      setText('hero-title', copy.hero.title);
+      setText('hero-lead', copy.hero.lead);
+      setText('cta-see-how', copy.ctas.seeHow);
+      setText('hero-microcopy', copy.hero.microcopy);
+      setText('sidecard-badge', copy.sideCard.badge);
+      setText('funnel-title', copy.sideCard.title);
+      setText('sidecard-body', copy.sideCard.body);
+      setText('benefits-eyebrow', copy.benefits.eyebrow);
+      setText('resultados-title', copy.benefits.title);
+      setText('benefits-intro', copy.benefits.intro);
+      setText('features-eyebrow', copy.features.eyebrow);
+      setText('prueba-title', copy.features.title);
+      setText('features-intro', copy.features.intro);
+      setText('steps-eyebrow', copy.steps.eyebrow);
+      setText('como-funciona-title', copy.steps.title);
+      setText('steps-intro', copy.steps.intro);
+      setText('feedback-title', copy.steps.panel.title);
+      setText('feedback-body', copy.steps.panel.body);
+      setText('faq-eyebrow', copy.faq.eyebrow);
+      setText('preguntas-title', copy.faq.title);
+      setText('closing-eyebrow', copy.closing.eyebrow);
+      setText('cta-title', copy.closing.title);
+      setText('closing-body', copy.closing.body);
+      setText('cta-back-to-top', copy.ctas.backToTop);
+      setText('footer-tagline', copy.footer.tagline);
+
+      document.querySelectorAll('[data-cta="header"]').forEach((node) => {
+        node.textContent = copy.ctas.appShort;
+        node.setAttribute('data-destination', copy.analytics.destinationLabel);
+      });
+
+      document.querySelectorAll('[data-cta="hero"], [data-cta="bottom"]').forEach((node) => {
+        node.textContent = copy.ctas.app;
+        node.setAttribute('data-destination', copy.analytics.destinationLabel);
+      });
+
+      renderCheckpoints(copy.sideCard.checkpoints);
+      renderPills(copy.sideCard.pills);
+      renderCards('benefits-grid', copy.benefits.items, 'info-card');
+      renderStringList('features-list', copy.features.points);
+      renderCards('steps-list', copy.steps.items, 'step-card');
+      renderStringList('feedback-list', copy.steps.panel.points);
+      renderFaqs(copy.faq.items);
+      updateLocaleButtons(locale);
+
+      if (persist) {
+        window.localStorage.setItem(storageKey, locale);
+      }
+    }
+
+    const activeLocale = detectLocale();
+    applyLocale(activeLocale, false);
+
+    document.querySelectorAll('[data-locale-button]').forEach((button) => {
+      button.addEventListener('click', () => {
+        applyLocale(button.getAttribute('data-locale-button'));
+      });
+    });
+  </script>
 </BaseLayout>

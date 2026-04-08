@@ -36,6 +36,7 @@ a {
 
 img {
   max-width: 100%;
+  display: block;
 }
 
 .skip-link {
@@ -83,6 +84,12 @@ img {
   padding: 1rem 0;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
@@ -120,6 +127,32 @@ img {
 .nav-list a {
   text-decoration: none;
   color: var(--muted);
+}
+
+.locale-switcher {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255, 253, 249, 0.8);
+}
+
+.locale-button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.locale-button[data-active] {
+  background: var(--accent);
+  color: var(--accent-contrast);
 }
 
 .hero-grid,
@@ -267,6 +300,7 @@ h3 {
 
 .hero-copy {
   max-width: 44rem;
+  min-width: 0;
 }
 
 .funnel-card,
@@ -279,6 +313,7 @@ h3 {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  min-width: 0;
 }
 
 .funnel-card,
@@ -296,6 +331,14 @@ h3 {
   background: var(--surface-alt);
   color: var(--text);
   font-weight: 700;
+}
+
+.hero-preview {
+  width: 100%;
+  margin-bottom: 1.25rem;
+  border-radius: 1.5rem;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, #fbf6ef 0%, #f1e2d2 100%);
 }
 
 .inline-proof {
@@ -391,8 +434,18 @@ button:focus-visible {
 
   .header-inner,
   .footer-inner {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .hero-grid {
+    gap: 1.5rem;
   }
 }
 
@@ -406,9 +459,16 @@ button:focus-visible {
   }
 
   .nav-list,
+  .header-actions,
   .hero-actions,
   .cta-actions {
     width: 100%;
+  }
+
+  .header-inner,
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .site-header {
@@ -419,13 +479,28 @@ button:focus-visible {
     width: 100%;
   }
 
-  .button {
+  .locale-switcher {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .locale-button {
+    flex: 1 1 0;
+  }
+
+  .hero-actions .button,
+  .cta-actions .button,
+  .header-cta {
     width: 100%;
   }
 
   .text-link {
     width: 100%;
     text-align: center;
+  }
+
+  .hero-preview {
+    border-radius: 1.25rem;
   }
 }
 

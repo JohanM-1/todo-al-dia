@@ -6,23 +6,26 @@ interface Props {
   description?: string;
   canonical?: string;
   image?: string;
+  lang?: string;
   structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
-  title = 'TodoAlDía | Registrá tu plata rápido y abrí la app',
-  description = 'TodoAlDía te ayuda a registrar gastos e ingresos en segundos para entender en qué se te va la plata y actuar hoy, sin fricción ni vueltas.',
+  title = 'TodoAlDia | Track expenses in seconds and understand your money',
+  description = 'Track expenses and income with voice or text, understand where your money goes, and start organizing your finances without endless spreadsheets.',
   canonical = '/',
   image = '/social-card.svg',
+  lang = 'en',
   structuredData,
 } = Astro.props;
 
 const canonicalUrl = new URL(canonical.trim() || '/', Astro.site);
 const socialImageUrl = new URL(image, Astro.site);
+const ogLocale = lang.startsWith('es') ? 'es_AR' : 'en_US';
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -35,7 +38,7 @@ const socialImageUrl = new URL(image, Astro.site);
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="TodoAlDía" />
-    <meta property="og:locale" content="es_AR" />
+    <meta property="og:locale" content={ogLocale} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl.href} />
