@@ -197,104 +197,109 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     return GlassContainer(
       key: const ValueKey('home_hero_header'),
-      padding: const EdgeInsets.all(24),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              scheme.primary.withValues(alpha: 0.20),
-              AppTheme.secondaryColor.withValues(alpha: 0.12),
-              Colors.transparent,
-            ],
+      padding: EdgeInsets.zero,
+      child: SizedBox(
+        width: double.infinity,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+            color: scheme.surfaceContainerHighest.withValues(alpha: 0.24),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                scheme.primary.withValues(alpha: 0.38),
+                AppTheme.secondaryColor.withValues(alpha: 0.28),
+                scheme.surfaceContainerHighest.withValues(alpha: 0.18),
+              ],
+              stops: const [0.0, 0.58, 1.0],
+            ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: [
-                  _buildHeaderChip(
-                    context,
-                    icon: Icons.auto_graph_rounded,
-                    label: quickStatus,
-                    color: scheme.primary,
-                  ),
-                  _buildHeaderChip(
-                    context,
-                    icon: Icons.calendar_today_rounded,
-                    label: '$monthLabel $currentYear',
-                    color: scheme.onSurface,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 18),
-              Text(
-                'Una vista clara para decidir mejor, antes de gastar.',
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                state.recentMovements.isEmpty
-                    ? 'Todavía no hay actividad registrada. Empezá cargando tu primer movimiento y la app te va a devolver contexto real.'
-                    : 'Ingresos, gastos y metas en un solo lugar, con prioridad en lo importante y sin ruido visual.',
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: 22),
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: [
-                  _HeroMetric(
-                    label: 'Balance actual',
-                    value: CurrencyFormatter.formatWithSymbol(
-                      state.totalBalance,
-                      AppDatabase.currentCurrency,
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    _buildHeaderChip(
+                      context,
+                      icon: Icons.auto_graph_rounded,
+                      label: quickStatus,
+                      color: scheme.primary,
                     ),
-                    tone: state.totalBalance >= 0
-                        ? AppTheme.incomeColor
-                        : AppTheme.expenseColor,
+                    _buildHeaderChip(
+                      context,
+                      icon: Icons.calendar_today_rounded,
+                      label: '$monthLabel $currentYear',
+                      color: scheme.onSurface,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 18),
+                Text(
+                  'Una vista clara para decidir mejor, antes de gastar.',
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
                   ),
-                  _HeroMetric(
-                    label: 'Tasa de ahorro',
-                    value: '${state.savingsRate.toStringAsFixed(1)}%',
-                    tone: _getSavingsRateColor(state.savingsRate),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  state.recentMovements.isEmpty
+                      ? 'Todavía no hay actividad registrada. Empezá cargando tu primer movimiento y la app te va a devolver contexto real.'
+                      : 'Ingresos, gastos y metas en un solo lugar, con prioridad en lo importante y sin ruido visual.',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: scheme.onSurfaceVariant,
                   ),
-                  _HeroMetric(
-                    label: 'Metas activas',
-                    value: '${state.topGoals.length}',
-                    tone: AppTheme.secondaryColor,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 22),
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: _openQuickAdd,
-                    icon: const Icon(Icons.add_rounded),
-                    label: const Text('Agregar movimiento'),
-                  ),
-                  OutlinedButton.icon(
-                    onPressed: () => context.push('/movements'),
-                    icon: const Icon(Icons.receipt_long_rounded),
-                    label: const Text('Ver historial'),
-                  ),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 22),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    _HeroMetric(
+                      label: 'Balance actual',
+                      value: CurrencyFormatter.formatWithSymbol(
+                        state.totalBalance,
+                        AppDatabase.currentCurrency,
+                      ),
+                      tone: state.totalBalance >= 0
+                          ? AppTheme.incomeColor
+                          : AppTheme.expenseColor,
+                    ),
+                    _HeroMetric(
+                      label: 'Tasa de ahorro',
+                      value: '${state.savingsRate.toStringAsFixed(1)}%',
+                      tone: _getSavingsRateColor(state.savingsRate),
+                    ),
+                    _HeroMetric(
+                      label: 'Metas activas',
+                      value: '${state.topGoals.length}',
+                      tone: AppTheme.secondaryColor,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 22),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: _openQuickAdd,
+                      icon: const Icon(Icons.add_rounded),
+                      label: const Text('Agregar movimiento'),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () => context.push('/movements'),
+                      icon: const Icon(Icons.receipt_long_rounded),
+                      label: const Text('Ver historial'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

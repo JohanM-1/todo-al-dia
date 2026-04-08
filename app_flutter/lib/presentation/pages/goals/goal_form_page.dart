@@ -29,7 +29,7 @@ class _GoalFormPageState extends State<GoalFormPage> {
   bool _isLoading = true;
   bool _isSaving = false;
   int _selectedColorIndex = 0;
-  String _currencyCode = 'ARS';
+  String _currencyCode = 'COP';
 
   static const _availableColors = [
     Color(0xFF2196F3), // Blue

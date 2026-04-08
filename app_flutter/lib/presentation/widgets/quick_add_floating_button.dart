@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 class QuickAddFloatingButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isExtended;
+  final String label;
+  final IconData icon;
 
   const QuickAddFloatingButton({
     super.key,
     required this.onPressed,
     this.isExtended = true,
+    this.label = 'Agregar movimiento',
+    this.icon = Icons.add_rounded,
   });
 
   @override
@@ -18,9 +22,9 @@ class QuickAddFloatingButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(isExtended ? 20 : 18),
       boxShadow: [
         BoxShadow(
-          color: theme.colorScheme.primary.withValues(alpha: 0.22),
-          blurRadius: 24,
-          offset: const Offset(0, 14),
+          color: theme.colorScheme.primary.withValues(alpha: 0.16),
+          blurRadius: 18,
+          offset: const Offset(0, 10),
         ),
       ],
     );
@@ -31,8 +35,8 @@ class QuickAddFloatingButton extends StatelessWidget {
         child: FloatingActionButton.extended(
           key: const ValueKey('home_fab'),
           onPressed: onPressed,
-          icon: const Icon(Icons.add_rounded),
-          label: const Text('Agregar movimiento'),
+          icon: Icon(icon),
+          label: Text(label),
         ),
       );
     }
@@ -42,7 +46,7 @@ class QuickAddFloatingButton extends StatelessWidget {
       child: FloatingActionButton(
         key: const ValueKey('home_fab'),
         onPressed: onPressed,
-        child: const Icon(Icons.add_rounded),
+        child: Icon(icon),
       ),
     );
   }

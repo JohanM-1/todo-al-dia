@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/glass_card.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../data/database/app_database.dart';
 import '../../../domain/entities/entities.dart';
@@ -10,7 +11,10 @@ import '../../bloc/goal/goal_bloc.dart';
 import '../../bloc/goal/goal_event.dart';
 import '../../bloc/goal/goal_state.dart';
 import '../../widgets/currency_text_field.dart';
+import '../../widgets/empty_state_card.dart';
 import '../../widgets/goal_progress_widget.dart';
+import '../../widgets/page_hero_card.dart';
+import '../../widgets/quick_add_floating_button.dart';
 
 class GoalsPage extends StatefulWidget {
   const GoalsPage({super.key});
@@ -82,29 +86,70 @@ class _GoalsPageState extends State<GoalsPage>
                       return const Center(child: CircularProgressIndicator());
                     }
 
-                    return TabBarView(
-                      controller: _tabController,
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _GoalsList(
-                          goals: state.activeGoals,
-                          emptyMessage: 'No hay metas activas',
-                          emptySubtitle:
-                              'Toca + para crear tu primera meta de ahorro',
-                          isActive: true,
-                          onDelete: _deleteGoal,
-                          onAddContribution: _showContributionDialog,
-                          onMarkCompleted: _markCompleted,
-                          onPause: _pauseGoal,
-                          onResume: _resumeGoal,
+                        PageHeroCard(
+                          eyebrow: 'Metas y foco',
+                          title: 'Ahorrá con intención, no por accidente.',
+                          subtitle:
+                              'Seguimiento claro de avances, pausas y fechas objetivo para que cada meta tenga prioridad real.',
+                          icon: Icons.savings_rounded,
+                          actions: [
+                            ElevatedButton.icon(
+                              onPressed: () async {
+                                await context.push('/goal/add');
+                                if (context.mounted) {
+                                  context.read<GoalBloc>().add(LoadGoals());
+                                }
+                              },
+                              icon: const Icon(Icons.add_rounded),
+                              label: const Text('Nueva meta'),
+                            ),
+                          ],
+                          footer: [
+                            HeroBadge(
+                              label: '${state.activeGoals.length} activas',
+                              color: Theme.of(context).colorScheme.primary,
+                              icon: Icons.flag_outlined,
+                            ),
+                            HeroBadge(
+                              label:
+                                  '${state.completedGoals.length} completadas',
+                              color: AppTheme.budgetSuccessColor,
+                              icon: Icons.check_circle_outline_rounded,
+                            ),
+                          ],
                         ),
-                        _GoalsList(
-                          goals: state.completedGoals,
-                          emptyMessage: 'No hay metas completadas',
-                          emptySubtitle: 'Completa una meta para verla aquí',
-                          isActive: false,
-                          onDelete: _deleteGoal,
-                          onAddContribution: _showContributionDialog,
-                          onMarkCompleted: _markCompleted,
+                        const SizedBox(height: 16),
+                        Expanded(
+                          child: TabBarView(
+                            controller: _tabController,
+                            children: [
+                              _GoalsList(
+                                goals: state.activeGoals,
+                                emptyMessage: 'No hay metas activas',
+                                emptySubtitle:
+                                    'Creá una meta y convertí una intención difusa en un plan medible.',
+                                isActive: true,
+                                onDelete: _deleteGoal,
+                                onAddContribution: _showContributionDialog,
+                                onMarkCompleted: _markCompleted,
+                                onPause: _pauseGoal,
+                                onResume: _resumeGoal,
+                              ),
+                              _GoalsList(
+                                goals: state.completedGoals,
+                                emptyMessage: 'No hay metas completadas',
+                                emptySubtitle:
+                                    'Cuando cierres una meta, la vas a ver acá como referencia de progreso real.',
+                                isActive: false,
+                                onDelete: _deleteGoal,
+                                onAddContribution: _showContributionDialog,
+                                onMarkCompleted: _markCompleted,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     );
@@ -113,14 +158,15 @@ class _GoalsPageState extends State<GoalsPage>
               ),
             ),
           ),
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: QuickAddFloatingButton(
+            isExtended: !isTablet,
+            label: 'Nueva meta',
             onPressed: () async {
               await context.push('/goal/add');
               if (context.mounted) {
                 context.read<GoalBloc>().add(LoadGoals());
               }
             },
-            child: const Icon(Icons.add),
           ),
         );
       },
@@ -289,32 +335,17 @@ class _GoalsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (goals.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              isActive ? Icons.savings_outlined : Icons.check_circle_outline,
-              size: 64,
-              color: Colors.grey,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              emptyMessage,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Colors.grey,
-                  ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              emptySubtitle,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey,
-                  ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+      return EmptyStateCard(
+        icon: isActive ? Icons.savings_outlined : Icons.check_circle_outline,
+        title: emptyMessage,
+        subtitle: emptySubtitle,
+        action: isActive
+            ? ElevatedButton.icon(
+                onPressed: () => context.push('/goal/add'),
+                icon: const Icon(Icons.add_rounded),
+                label: const Text('Crear meta'),
+              )
+            : null,
       );
     }
 
@@ -400,11 +431,11 @@ class _GoalCard extends StatelessWidget {
 
     return Hero(
       tag: 'goal-${goal.id}',
-      child: Card(
+      child: GlassCard(
         margin: const EdgeInsets.only(bottom: 12),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(

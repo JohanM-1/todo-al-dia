@@ -295,9 +295,9 @@ class CurrencyInputFormatter extends TextInputFormatter {
 
 /// Extensión удобная para formatear doubles como moneda.
 extension CurrencyDisplay on double {
-  /// Formatea este monto con la moneda por defecto (ARS).
+  /// Formatea este monto con la moneda por defecto.
   String toCurrency() {
-    return CurrencyFormatter.formatWithSymbol(this, 'ARS');
+    return CurrencyFormatter.formatWithSymbol(this, 'COP');
   }
 
   /// Formatea este monto con la moneda especificada.

@@ -28,7 +28,7 @@ class _BudgetFormPageState extends State<BudgetFormPage> {
   BudgetEntity? _existingBudget;
   bool _isLoading = true;
   bool _isSaving = false;
-  String _currencyCode = 'ARS';
+  String _currencyCode = 'COP';
 
   int _periodMonth = DateTime.now().month;
   int _periodYear = DateTime.now().year;

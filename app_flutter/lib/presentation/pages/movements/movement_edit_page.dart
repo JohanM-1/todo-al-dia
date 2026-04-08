@@ -33,7 +33,7 @@ class _MovementEditPageState extends State<MovementEditPage> {
   List<CategoryEntity> _categories = [];
   bool _isLoading = true;
   bool _isSaving = false;
-  String _currencyCode = 'ARS';
+  String _currencyCode = 'COP';
 
   @override
   void initState() {

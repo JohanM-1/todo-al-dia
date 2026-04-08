@@ -30,7 +30,7 @@ class _MovementFormPageState extends State<MovementFormPage> {
   List<CategoryEntity> _categories = [];
   int? _defaultAccountId;
   bool _isLoading = false;
-  String _currencyCode = 'ARS';
+  String _currencyCode = 'COP';
 
   @override
   void initState() {

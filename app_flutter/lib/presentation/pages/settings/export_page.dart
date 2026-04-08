@@ -298,11 +298,11 @@ class _ExportPageState extends State<ExportPage> {
       }
 
       // Export movements
-      final path = await _exportService.exportAndShare(movements);
+      final exportPath = await _exportService.exportAndShare(movements);
 
       setState(() {
         _isExporting = false;
-        _exportResult = path.split('/').last;
+        _exportResult = _fileNameFromPath(exportPath);
       });
 
       if (mounted) {
@@ -322,6 +322,12 @@ class _ExportPageState extends State<ExportPage> {
         );
       }
     }
+  }
+
+  String _fileNameFromPath(String filePath) {
+    final normalizedPath = filePath.replaceAll('\\', '/');
+    final segments = normalizedPath.split('/');
+    return segments.isEmpty ? filePath : segments.last;
   }
 }
 

@@ -33,7 +33,7 @@ class _AddMovementPageState extends State<AddMovementPage> {
   bool _isLoading = false;
   bool _isCategoriesLoading = true;
   int? _defaultAccountId;
-  String _currencyCode = 'ARS';
+  String _currencyCode = 'COP';
 
   // Voice - lazy initialization
   VoiceService? _voiceService;

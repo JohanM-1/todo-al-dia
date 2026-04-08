@@ -14,7 +14,7 @@ class AccountEntity extends Equatable {
   const AccountEntity({
     this.id,
     required this.name,
-    this.currency = 'ARS',
+    this.currency = 'COP',
     this.balance = 0.0,
     this.isActive = true,
     required this.createdAt,

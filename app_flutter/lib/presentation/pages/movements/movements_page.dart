@@ -4,12 +4,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/glass_card.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../data/database/app_database.dart';
 import '../../../domain/entities/entities.dart';
 import '../../../domain/repositories/repositories.dart';
 import '../../bloc/dashboard/dashboard_bloc.dart';
 import '../../bloc/dashboard/dashboard_event.dart';
+import '../../widgets/empty_state_card.dart';
+import '../../widgets/page_hero_card.dart';
+import '../../widgets/quick_add_floating_button.dart';
 
 class MovementsPage extends StatefulWidget {
   const MovementsPage({super.key});
@@ -171,9 +176,13 @@ class _MovementsPageState extends State<MovementsPage> {
       builder: (context, constraints) {
         final isWide = constraints.maxWidth >= 600;
         final isDesktop = constraints.maxWidth >= 900;
-        final horizontalPadding = isDesktop ? 24.0 : 8.0;
+        final horizontalPadding = isDesktop ? 24.0 : 16.0;
         final maxContentWidth =
             isDesktop ? 1000.0 : (isWide ? 800.0 : double.infinity);
+        final hasFilters = _filterStartDate != null ||
+            _filterEndDate != null ||
+            _filterCategoryId != null ||
+            _filterType != null;
 
         return Scaffold(
           appBar: AppBar(
@@ -188,43 +197,89 @@ class _MovementsPageState extends State<MovementsPage> {
                   child: const Icon(Icons.filter_list),
                 ),
                 onPressed: _showFilterDialog,
+                tooltip: 'Filtrar movimientos',
               ),
             ],
           ),
-          body: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: horizontalPadding,
-              vertical: 8,
-            ),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: maxContentWidth),
-                child: _buildBody(),
+          body: RefreshIndicator(
+            onRefresh: _loadData,
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(
+                horizontalPadding,
+                8,
+                horizontalPadding,
+                112,
+              ),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxContentWidth),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PageHeroCard(
+                        eyebrow: 'Historial diario',
+                        title: 'Tus movimientos en un solo lugar.',
+                        subtitle:
+                            'Filtrá rápido, encontrá patrones y corregí registros sin perder contexto visual.',
+                        icon: Icons.receipt_long_rounded,
+                        actions: [
+                          ElevatedButton.icon(
+                            onPressed: () async {
+                              await context.push('/add');
+                              if (!mounted) {
+                                return;
+                              }
+                              unawaited(_loadData());
+                            },
+                            icon: const Icon(Icons.add_rounded),
+                            label: const Text('Agregar movimiento'),
+                          ),
+                          OutlinedButton.icon(
+                            onPressed: _showFilterDialog,
+                            icon: const Icon(Icons.tune_rounded),
+                            label: Text(
+                              hasFilters ? 'Editar filtros' : 'Filtrar lista',
+                            ),
+                          ),
+                        ],
+                        footer: [
+                          HeroBadge(
+                            label: '${_movements.length} registros',
+                            color: Theme.of(context).colorScheme.primary,
+                            icon: Icons.dataset_outlined,
+                          ),
+                          HeroBadge(
+                            label: hasFilters
+                                ? 'Filtros activos'
+                                : 'Vista completa',
+                            color: hasFilters
+                                ? AppTheme.warningColor
+                                : Theme.of(context).colorScheme.onSurface,
+                            icon: hasFilters
+                                ? Icons.filter_alt_rounded
+                                : Icons.check_circle_outline_rounded,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      _buildBody(),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-          floatingActionButton: isWide
-              ? FloatingActionButton.extended(
-                  onPressed: () async {
-                    await context.push('/add');
-                    if (!mounted) {
-                      return;
-                    }
-                    unawaited(_loadData());
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text('Agregar'),
-                )
-              : FloatingActionButton(
-                  onPressed: () async {
-                    await context.push('/add');
-                    if (!mounted) {
-                      return;
-                    }
-                    unawaited(_loadData());
-                  },
-                  child: const Icon(Icons.add),
-                ),
+          floatingActionButton: QuickAddFloatingButton(
+            isExtended: isWide,
+            onPressed: () async {
+              await context.push('/add');
+              if (!mounted) {
+                return;
+              }
+              unawaited(_loadData());
+            },
+          ),
         );
       },
     );
@@ -236,136 +291,124 @@ class _MovementsPageState extends State<MovementsPage> {
     }
 
     if (_error != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Error: $_error'),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loadData,
-              child: const Text('Reintentar'),
-            ),
-          ],
+      return EmptyStateCard(
+        icon: Icons.error_outline_rounded,
+        title: 'No pudimos cargar los movimientos',
+        subtitle: '$_error',
+        action: ElevatedButton.icon(
+          onPressed: _loadData,
+          icon: const Icon(Icons.refresh_rounded),
+          label: const Text('Reintentar'),
         ),
       );
     }
 
     if (_movements.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.receipt_long, size: 64, color: Colors.grey),
-            const SizedBox(height: 16),
-            Text(
-              'No hay movimientos',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Colors.grey,
-                  ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Toca + para agregar uno',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey,
-                  ),
-            ),
-          ],
+      return EmptyStateCard(
+        icon: Icons.receipt_long_rounded,
+        title: 'Todavía no hay movimientos',
+        subtitle:
+            'Registrá ingresos o gastos para empezar a leer tu historia financiera con contexto real.',
+        action: ElevatedButton.icon(
+          onPressed: () => context.push('/add'),
+          icon: const Icon(Icons.add_rounded),
+          label: const Text('Agregar primer movimiento'),
         ),
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: () async {
-        if (mounted) {
-          await _loadData();
-        }
-      },
-      child: ListView.builder(
-        padding: const EdgeInsets.all(8),
-        itemCount: _movements.length,
-        itemBuilder: (context, index) {
-          final movement = _movements[index];
-          final category = _categories.firstWhere(
-            (c) => c.id == movement.categoryId,
-            orElse: () => const CategoryEntity(
-              name: 'Sin categoría',
-            ),
-          );
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.zero,
+      itemCount: _movements.length,
+      itemBuilder: (context, index) {
+        final movement = _movements[index];
+        final category = _categories.firstWhere(
+          (c) => c.id == movement.categoryId,
+          orElse: () => const CategoryEntity(
+            name: 'Sin categoría',
+          ),
+        );
 
-          return Dismissible(
-            key: Key(movement.uuid),
-            direction: DismissDirection.endToStart,
-            background: Container(
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.only(right: 16),
-              color: Colors.red,
-              child: const Icon(Icons.delete, color: Colors.white),
+        return Dismissible(
+          key: Key(movement.uuid),
+          direction: DismissDirection.endToStart,
+          background: Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 20),
+            decoration: BoxDecoration(
+              color: AppTheme.errorColor,
+              borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
             ),
-            confirmDismiss: (direction) async {
-              return await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Eliminar'),
-                  content: const Text('¿Eliminar este movimiento?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      child: const Text('Cancelar'),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, true),
-                      style: TextButton.styleFrom(foregroundColor: Colors.red),
-                      child: const Text('Eliminar'),
-                    ),
-                  ],
-                ),
-              );
-            },
-            onDismissed: (_) => _deleteMovement(movement),
-            child: Card(
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primaryContainer,
-                  child: Text(category.icon),
-                ),
-                title: Text(category.name),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (movement.merchant != null &&
-                        movement.merchant!.isNotEmpty)
-                      Text(movement.merchant!),
-                    Text(
-                      '${movement.date.day}/${movement.date.month}/${movement.date.year}',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-                trailing: Text(
-                  '${movement.type == MovementType.expense ? '-' : ''}${CurrencyFormatter.formatWithSymbol(movement.amount, AppDatabase.currentCurrency)}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: movement.type == MovementType.expense
-                        ? Colors.red
-                        : Colors.green,
+            child:
+                const Icon(Icons.delete_outline_rounded, color: Colors.white),
+          ),
+          confirmDismiss: (direction) async {
+            return await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('Eliminar'),
+                content: const Text('¿Eliminar este movimiento?'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: const Text('Cancelar'),
                   ),
-                ),
-                onTap: () async {
-                  await context.push('/movement/edit/${movement.id}');
-                  if (!mounted) {
-                    return;
-                  }
-                  unawaited(_loadData());
-                },
-                isThreeLine: true,
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    style: TextButton.styleFrom(foregroundColor: Colors.red),
+                    child: const Text('Eliminar'),
+                  ),
+                ],
               ),
+            );
+          },
+          onDismissed: (_) => _deleteMovement(movement),
+          child: GlassCard(
+            margin: const EdgeInsets.only(bottom: 12),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+            child: ListTile(
+              leading: CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                child: Text(category.icon),
+              ),
+              title: Text(category.name),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (movement.merchant != null &&
+                      movement.merchant!.isNotEmpty)
+                    Text(movement.merchant!),
+                  Text(
+                    '${movement.date.day}/${movement.date.month}/${movement.date.year}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+              trailing: Text(
+                '${movement.type == MovementType.expense ? '-' : ''}${CurrencyFormatter.formatWithSymbol(movement.amount, AppDatabase.currentCurrency)}',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: movement.type == MovementType.expense
+                          ? AppTheme.expenseColor
+                          : AppTheme.incomeColor,
+                    ),
+              ),
+              onTap: () async {
+                await context.push('/movement/edit/${movement.id}');
+                if (!mounted) {
+                  return;
+                }
+                unawaited(_loadData());
+              },
+              isThreeLine: true,
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -434,110 +477,117 @@ class _FilterBottomSheetState extends State<_FilterBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        child: GlassCard(
+          borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Filtrar Movimientos',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              TextButton(
-                onPressed: () {
-                  widget.onClear();
-                  Navigator.pop(context);
-                },
-                child: const Text('Limpiar'),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text('Tipo', style: Theme.of(context).textTheme.titleSmall),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            children: [
-              FilterChip(
-                label: const Text('Todos'),
-                selected: _type == null,
-                onSelected: (_) => setState(() => _type = null),
-              ),
-              FilterChip(
-                label: const Text('Gastos'),
-                selected: _type == MovementType.expense,
-                onSelected: (_) => setState(() => _type = MovementType.expense),
-              ),
-              FilterChip(
-                label: const Text('Ingresos'),
-                selected: _type == MovementType.income,
-                onSelected: (_) => setState(() => _type = MovementType.income),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text('Fecha', style: Theme.of(context).textTheme.titleSmall),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _selectStartDate,
-                  child: Text(
-                    _startDate != null
-                        ? '${_startDate!.day}/${_startDate!.month}/${_startDate!.year}'
-                        : 'Desde',
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Filtrar movimientos',
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
+                  TextButton(
+                    onPressed: () {
+                      widget.onClear();
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Limpiar'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text('Tipo', style: Theme.of(context).textTheme.titleSmall),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  FilterChip(
+                    label: const Text('Todos'),
+                    selected: _type == null,
+                    onSelected: (_) => setState(() => _type = null),
+                  ),
+                  FilterChip(
+                    label: const Text('Gastos'),
+                    selected: _type == MovementType.expense,
+                    onSelected: (_) =>
+                        setState(() => _type = MovementType.expense),
+                  ),
+                  FilterChip(
+                    label: const Text('Ingresos'),
+                    selected: _type == MovementType.income,
+                    onSelected: (_) =>
+                        setState(() => _type = MovementType.income),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text('Fecha', style: Theme.of(context).textTheme.titleSmall),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _selectStartDate,
+                      child: Text(
+                        _startDate != null
+                            ? '${_startDate!.day}/${_startDate!.month}/${_startDate!.year}'
+                            : 'Desde',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _selectEndDate,
+                      child: Text(
+                        _endDate != null
+                            ? '${_endDate!.day}/${_endDate!.month}/${_endDate!.year}'
+                            : 'Hasta',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text('Categoría', style: Theme.of(context).textTheme.titleSmall),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<int?>(
+                initialValue: _categoryId,
+                decoration: const InputDecoration(
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
+                items: [
+                  const DropdownMenuItem(child: Text('Todas')),
+                  ...widget.categories.map((c) => DropdownMenuItem(
+                        value: c.id,
+                        child: Text('${c.icon} ${c.name}'),
+                      )),
+                ],
+                onChanged: (value) => setState(() => _categoryId = value),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () {
+                    widget.onApply(_startDate, _endDate, _categoryId, _type);
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Aplicar filtros'),
                 ),
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _selectEndDate,
-                  child: Text(
-                    _endDate != null
-                        ? '${_endDate!.day}/${_endDate!.month}/${_endDate!.year}'
-                        : 'Hasta',
-                  ),
-                ),
-              ),
             ],
           ),
-          const SizedBox(height: 16),
-          Text('Categoría', style: Theme.of(context).textTheme.titleSmall),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<int?>(
-            initialValue: _categoryId,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            ),
-            items: [
-              const DropdownMenuItem(child: Text('Todas')),
-              ...widget.categories.map((c) => DropdownMenuItem(
-                    value: c.id,
-                    child: Text('${c.icon} ${c.name}'),
-                  )),
-            ],
-            onChanged: (value) => setState(() => _categoryId = value),
-          ),
-          const SizedBox(height: 24),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: () {
-                widget.onApply(_startDate, _endDate, _categoryId, _type);
-                Navigator.pop(context);
-              },
-              child: const Text('Aplicar Filtros'),
-            ),
-          ),
-          const SizedBox(height: 16),
-        ],
+        ),
       ),
     );
   }

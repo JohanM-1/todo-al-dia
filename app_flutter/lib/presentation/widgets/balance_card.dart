@@ -18,7 +18,7 @@ class BalanceCard extends StatelessWidget {
     required this.monthIncome,
     required this.monthExpenses,
     this.isLoading = false,
-    this.currencyCode = 'ARS',
+    this.currencyCode = 'COP',
   });
 
   @override

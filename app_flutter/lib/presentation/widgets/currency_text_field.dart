@@ -105,7 +105,7 @@ class CurrencyTextField extends StatelessWidget {
 /// Helper mixin para widgets que necesitan acceso a la moneda.
 /// Provee método getCurrentCurrency().
 mixin CurrencyAwareWidget<T extends StatefulWidget> on State<T> {
-  String get currentCurrency => 'ARS';
+  String get currentCurrency => 'COP';
 
   /// Parsea el valor del controller usando la moneda actual.
   double parseAmount(TextEditingController controller) {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/glass_card.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../data/database/app_database.dart';
 import '../../../domain/entities/entities.dart';
@@ -15,6 +16,9 @@ import '../../bloc/dashboard/dashboard_bloc.dart';
 import '../../bloc/dashboard/dashboard_event.dart';
 import '../../widgets/budget_alert_widget.dart';
 import '../../widgets/currency_text_field.dart';
+import '../../widgets/empty_state_card.dart';
+import '../../widgets/page_hero_card.dart';
+import '../../widgets/quick_add_floating_button.dart';
 
 class BudgetsPage extends StatefulWidget {
   const BudgetsPage({super.key});
@@ -119,8 +123,46 @@ class _BudgetsPageState extends State<BudgetsPage> {
                   },
                   builder: (context, state) {
                     return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        PageHeroCard(
+                          eyebrow: 'Presupuesto mensual',
+                          title: 'Controlá tus límites antes de pasarte.',
+                          subtitle:
+                              'Seguí el gasto por categoría, detectá alertas y redistribuí presupuesto con menos fricción visual.',
+                          icon: Icons.pie_chart_rounded,
+                          actions: [
+                            ElevatedButton.icon(
+                              onPressed: () async {
+                                await context.push('/budget/add');
+                                _loadBudgets();
+                              },
+                              icon: const Icon(Icons.add_rounded),
+                              label: const Text('Nuevo presupuesto'),
+                            ),
+                            OutlinedButton.icon(
+                              onPressed: _selectPeriod,
+                              icon: const Icon(Icons.calendar_month_rounded),
+                              label: const Text('Cambiar período'),
+                            ),
+                          ],
+                          footer: [
+                            HeroBadge(
+                              label: _periodLabel,
+                              color: Theme.of(context).colorScheme.primary,
+                              icon: Icons.event_available_rounded,
+                            ),
+                            HeroBadge(
+                              label:
+                                  '${state.budgets.length} categorías activas',
+                              color: AppTheme.secondaryColor,
+                              icon: Icons.category_outlined,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
                         _buildPeriodHeader(),
+                        const SizedBox(height: 16),
                         Expanded(child: _buildBody(state)),
                       ],
                     );
@@ -129,12 +171,13 @@ class _BudgetsPageState extends State<BudgetsPage> {
               ),
             ),
           ),
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: QuickAddFloatingButton(
+            isExtended: !isTablet,
+            label: 'Nuevo presupuesto',
             onPressed: () async {
               await context.push('/budget/add');
               _loadBudgets();
             },
-            child: const Icon(Icons.add),
           ),
         );
       },
@@ -142,20 +185,13 @@ class _BudgetsPageState extends State<BudgetsPage> {
   }
 
   Widget _buildPeriodHeader() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Theme.of(context)
-            .colorScheme
-            .primaryContainer
-            .withValues(alpha: 0.3),
-      ),
+    return GlassCard(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.calendar_today,
+            Icons.calendar_today_rounded,
             size: 16,
             color: Theme.of(context).colorScheme.primary,
           ),
@@ -220,7 +256,7 @@ class _BudgetsPageState extends State<BudgetsPage> {
   }
 
   Widget _buildSummaryCard(BudgetState state) {
-    return Card(
+    return GlassCard(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -422,26 +458,15 @@ class _BudgetsPageState extends State<BudgetsPage> {
   }
 
   Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.pie_chart_outline, size: 64, color: Colors.grey),
-          const SizedBox(height: 16),
-          Text(
-            'No hay presupuestos',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.grey,
-                ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Toca + para crear tu primer presupuesto',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey,
-                ),
-          ),
-        ],
+    return EmptyStateCard(
+      icon: Icons.pie_chart_outline_rounded,
+      title: 'Todavía no hay presupuestos',
+      subtitle:
+          'Creá límites por categoría para que la app te avise ANTES de que el mes se te vaya de las manos.',
+      action: ElevatedButton.icon(
+        onPressed: () => context.push('/budget/add'),
+        icon: const Icon(Icons.add_rounded),
+        label: const Text('Crear primer presupuesto'),
       ),
     );
   }
@@ -508,11 +533,11 @@ class _BudgetCard extends StatelessWidget {
       progressColor = AppTheme.budgetSuccessColor;
     }
 
-    return Card(
+    return GlassCard(
       margin: const EdgeInsets.only(bottom: 8),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
