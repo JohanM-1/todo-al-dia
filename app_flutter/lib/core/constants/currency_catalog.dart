@@ -18,6 +18,22 @@ class CurrencyInfo {
     required this.decimalDigits,
     this.countryCode,
   });
+
+  String get flagEmoji {
+    final code = countryCode;
+    if (code == null || code.length != 2) {
+      return symbol;
+    }
+
+    final normalized = code.toUpperCase();
+    final first = normalized.codeUnitAt(0) - 0x41 + 0x1F1E6;
+    final second = normalized.codeUnitAt(1) - 0x41 + 0x1F1E6;
+    return String.fromCharCodes([first, second]);
+  }
+
+  String get displayLabel => '$name ($code)';
+
+  String get selectorSubtitle => '$code · $symbol';
 }
 
 /// Catálogo de monedas disponibles en la aplicación.
@@ -185,7 +201,7 @@ class CurrencyCatalog {
     CurrencyInfo(
       code: 'CUP',
       name: 'Peso Cubano',
-      symbol: r'₱',
+      symbol: '₱',
       locale: 'es_CU',
       decimalDigits: 2,
       countryCode: 'CU',
@@ -203,7 +219,7 @@ class CurrencyCatalog {
     CurrencyInfo(
       code: 'EUR',
       name: 'Euro',
-      symbol: r'€',
+      symbol: '€',
       locale: 'de_DE',
       decimalDigits: 2,
       countryCode: 'EU',
@@ -219,9 +235,23 @@ class CurrencyCatalog {
     }
   }
 
+  /// Normaliza un código de moneda y garantiza fallback a la moneda por defecto.
+  static String normalizeCode(String? code) {
+    if (code == null) {
+      return defaultCurrency.code;
+    }
+
+    final normalized = code.trim().toUpperCase();
+    if (normalized.isEmpty) {
+      return defaultCurrency.code;
+    }
+
+    return getByCode(normalized)?.code ?? defaultCurrency.code;
+  }
+
   /// Obtiene el símbolo de una moneda por su código.
   static String getSymbol(String code) {
-    return getByCode(code)?.symbol ?? r'$';
+    return getByCode(code)?.symbol ?? defaultCurrency.symbol;
   }
 
   /// Obtiene el nombre de una moneda por su código.
@@ -231,17 +261,48 @@ class CurrencyCatalog {
 
   /// Obtiene los decimales de una moneda por su código.
   static int getDecimalDigits(String code) {
-    return getByCode(code)?.decimalDigits ?? 2;
+    return getByCode(code)?.decimalDigits ?? defaultCurrency.decimalDigits;
   }
 
   /// Obtiene el locale de una moneda por su código.
   static String getLocale(String code) {
-    return getByCode(code)?.locale ?? 'en_US';
+    return getByCode(code)?.locale ?? defaultCurrency.locale;
+  }
+
+  /// Busca monedas por nombre, código, símbolo o país asociado.
+  static List<CurrencyInfo> search(String query) {
+    final normalizedQuery = _normalize(query);
+    if (normalizedQuery.isEmpty) {
+      return forSelector;
+    }
+
+    return forSelector.where((currency) {
+      return _normalize(currency.name).contains(normalizedQuery) ||
+          _normalize(currency.code).contains(normalizedQuery) ||
+          _normalize(currency.symbol).contains(normalizedQuery) ||
+          _normalize(currency.countryCode ?? '').contains(normalizedQuery);
+    }).toList();
   }
 
   /// Lista de monedas para mostrar en selectors (code + name).
   static List<CurrencyInfo> get forSelector => all;
 
   /// Obtiene la moneda por defecto.
-  static CurrencyInfo get defaultCurrency => getByCode('ARS')!;
+  static CurrencyInfo get defaultCurrency => getByCode('COP')!;
+
+  static String _normalize(String value) {
+    const replacements = {
+      'á': 'a',
+      'é': 'e',
+      'í': 'i',
+      'ó': 'o',
+      'ú': 'u',
+      'ü': 'u',
+      'ñ': 'n',
+    };
+
+    return value.trim().toLowerCase().split('').map((char) {
+      return replacements[char] ?? char;
+    }).join();
+  }
 }

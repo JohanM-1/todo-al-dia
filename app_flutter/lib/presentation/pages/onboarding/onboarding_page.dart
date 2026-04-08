@@ -1,11 +1,18 @@
+import 'dart:async';
+
 // lib/presentation/pages/onboarding/onboarding_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/currency_catalog.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/glass_card.dart';
 import '../../../data/database/app_database.dart';
 import '../../../domain/entities/entities.dart';
 import '../../../domain/repositories/repositories.dart';
+import '../../widgets/page_hero_card.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -17,36 +24,49 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage> {
   final PageController _pageController = PageController();
   final AppDatabase _db = AppDatabase.instance;
+  final TextEditingController _currencySearchController =
+      TextEditingController();
 
   int _currentPage = 0;
-  String _selectedCurrency = 'ARS';
-  String _accountName = 'Efectivo';
+  String _selectedCurrency = AppConstants.defaultCurrency;
+  String _accountName = '';
   bool _isLoading = false;
 
-  /// Get currencies from centralized catalog.
-  List<CurrencyInfo> get _currencies => CurrencyCatalog.forSelector;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_accountName.isEmpty) {
+      _accountName = AppLocalizations.of(context)?.cashAccount ?? 'Cash';
+    }
+  }
+
+  List<CurrencyInfo> get _filteredCurrencies {
+    return CurrencyCatalog.search(_currencySearchController.text);
+  }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _currencySearchController.dispose();
     super.dispose();
   }
 
   void _nextPage() {
     if (_currentPage < 2) {
-      _pageController.nextPage(
+      unawaited(_pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-      );
+      ));
     }
   }
 
   void _previousPage() {
     if (_currentPage > 0) {
-      _pageController.previousPage(
+      unawaited(_pageController.previousPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-      );
+      ));
     }
   }
 
@@ -71,9 +91,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
         context.go('/');
       }
     } catch (e) {
+      final l10n = AppLocalizations.of(context)!;
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+          SnackBar(content: Text('${l10n.error}: ${e.toString()}')),
         );
         setState(() => _isLoading = false);
       }
@@ -83,46 +105,67 @@ class _OnboardingPageState extends State<OnboardingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final isWide = constraints.maxWidth >= 900;
-          final isTablet = constraints.maxWidth >= 600;
-          final maxWidth =
-              isWide ? 500.0 : (isTablet ? 450.0 : double.infinity);
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Theme.of(context).colorScheme.primary.withValues(alpha: 0.10),
+              Theme.of(context).scaffoldBackgroundColor,
+              Theme.of(context).scaffoldBackgroundColor,
+            ],
+          ),
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isWide = constraints.maxWidth >= 900;
+            final isTablet = constraints.maxWidth >= 600;
+            final maxWidth =
+                isWide ? 560.0 : (isTablet ? 500.0 : double.infinity);
 
-          return Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: maxWidth),
-              child: SafeArea(
-                child: Column(
-                  children: [
-                    _buildProgressIndicator(),
-                    Expanded(
-                      child: PageView(
-                        controller: _pageController,
-                        physics: const NeverScrollableScrollPhysics(),
-                        onPageChanged: (index) {
-                          setState(() => _currentPage = index);
-                        },
+            return Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: maxWidth),
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: GlassCard(
+                      borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                      child: Column(
                         children: [
-                          _buildWelcomePage(),
-                          _buildCurrencyPage(),
-                          _buildAccountPage(),
+                          _buildProgressIndicator(),
+                          Expanded(
+                            child: PageView(
+                              controller: _pageController,
+                              physics: const NeverScrollableScrollPhysics(),
+                              onPageChanged: (index) {
+                                setState(() => _currentPage = index);
+                              },
+                              children: [
+                                _buildWelcomePage(),
+                                _buildCurrencyPage(),
+                                _buildAccountPage(),
+                              ],
+                            ),
+                          ),
+                          _buildNavigationButtons(),
                         ],
                       ),
                     ),
-                    _buildNavigationButtons(),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
 
   Widget _buildProgressIndicator() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -130,7 +173,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           TextButton(
             key: const ValueKey('onboarding_skip'),
             onPressed: _completeOnboarding,
-            child: const Text('Omitir'),
+            child: Text(l10n.onboardingSkip),
           ),
           const Spacer(),
           ...List.generate(3, (index) {
@@ -153,46 +196,28 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Widget _buildWelcomePage() {
-    return Padding(
-      padding: const EdgeInsets.all(32),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.account_balance_wallet,
-            size: 100,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          const SizedBox(height: 32),
-          Text(
-            '¡Bienvenido a TodoAlDía!',
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Tu asistente financiero personal.\n'
-            'Controla tus gastos, presupuestos y metas\n'
-            'de forma simple y rápida.',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 48),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildFeatureChip(Icons.mic, 'Voz'),
-              const SizedBox(width: 8),
-              _buildFeatureChip(Icons.pie_chart, 'Gráficos'),
-              const SizedBox(width: 8),
-              _buildFeatureChip(Icons.savings, 'Metas'),
-            ],
-          ),
-        ],
+    final l10n = AppLocalizations.of(context)!;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: PageHeroCard(
+          eyebrow: l10n.onboardingWelcomeEyebrow,
+          title: l10n.onboardingWelcomeTitle,
+          subtitle: l10n.onboardingWelcomeSubtitle,
+          icon: Icons.account_balance_wallet_rounded,
+          footer: [
+            _buildFeatureChip(Icons.mic_rounded, l10n.onboardingVoiceFeature),
+            _buildFeatureChip(
+              Icons.pie_chart_rounded,
+              l10n.onboardingBudgetsFeature,
+            ),
+            _buildFeatureChip(
+              Icons.savings_rounded,
+              l10n.onboardingGoalsFeature,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -205,71 +230,111 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Widget _buildCurrencyPage() {
+    final l10n = AppLocalizations.of(context)!;
+    final selectedCurrencyInfo = CurrencyCatalog.getByCode(_selectedCurrency) ??
+        CurrencyCatalog.defaultCurrency;
+
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '¿Cuál es tu moneda?',
+            l10n.onboardingCurrencyTitle,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Selecciona la moneda principal para tus transacciones.',
+            l10n.onboardingCurrencySubtitle,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
           ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              Chip(
+                avatar: Text(selectedCurrencyInfo.flagEmoji),
+                label: Text(selectedCurrencyInfo.displayLabel),
+              ),
+              Chip(
+                label: Text(l10n.onboardingCurrencyDefaultHint),
+              ),
+            ],
+          ),
           const SizedBox(height: 24),
+          TextField(
+            controller: _currencySearchController,
+            decoration: InputDecoration(
+              hintText: l10n.searchByNameOrCode,
+              prefixIcon: Icon(Icons.search),
+            ),
+            onChanged: (_) => setState(() {}),
+          ),
+          const SizedBox(height: 16),
           Expanded(
-            child: ListView.builder(
-              itemCount: _currencies.length,
-              itemBuilder: (context, index) {
-                final currency = _currencies[index];
-                final isSelected = currency.code == _selectedCurrency;
-                return Card(
-                  key: ValueKey('onboarding_currency_${currency.code}'),
-                  margin: const EdgeInsets.only(bottom: 8),
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.primaryContainer
-                      : null,
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: isSelected
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context)
-                              .colorScheme
-                              .surfaceContainerHighest,
-                      child: Text(
-                        currency.symbol,
-                        style: TextStyle(
-                          color: isSelected
-                              ? Theme.of(context).colorScheme.onPrimary
-                              : Theme.of(context).colorScheme.onSurfaceVariant,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+            child: _filteredCurrencies.isEmpty
+                ? Center(
+                    child: Text(
+                      l10n.noCurrenciesFound,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                      textAlign: TextAlign.center,
                     ),
-                    title: Text(currency.name),
-                    subtitle: Text(currency.code),
-                    trailing: isSelected
-                        ? Icon(
-                            Icons.check_circle,
-                            color: Theme.of(context).colorScheme.primary,
-                          )
-                        : null,
-                    onTap: () {
-                      setState(() {
-                        _selectedCurrency = currency.code;
-                      });
+                  )
+                : ListView.builder(
+                    itemCount: _filteredCurrencies.length,
+                    itemBuilder: (context, index) {
+                      final currency = _filteredCurrencies[index];
+                      final isSelected = currency.code == _selectedCurrency;
+                      return GlassCard(
+                        key: ValueKey('onboarding_currency_${currency.code}'),
+                        margin: const EdgeInsets.only(bottom: 8),
+                        backgroundColor: isSelected
+                            ? Theme.of(context).colorScheme.primaryContainer
+                            : null,
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: isSelected
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerHighest,
+                            child: Text(
+                              currency.flagEmoji,
+                              style: TextStyle(
+                                color: isSelected
+                                    ? Theme.of(context).colorScheme.onPrimary
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          title: Text(currency.name),
+                          subtitle: Text(currency.selectorSubtitle),
+                          trailing: isSelected
+                              ? Icon(
+                                  Icons.check_circle,
+                                  color: Theme.of(context).colorScheme.primary,
+                                )
+                              : null,
+                          onTap: () {
+                            setState(() {
+                              _selectedCurrency = currency.code;
+                            });
+                          },
+                        ),
+                      );
                     },
                   ),
-                );
-              },
-            ),
           ),
         ],
       ),
@@ -277,27 +342,28 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Widget _buildAccountPage() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Crea tu primera cuenta',
+            l10n.onboardingAccountTitle,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Una cuenta te permite organizar tus movimientos.\n'
-            'Puedes agregar más después.',
+            l10n.onboardingAccountSubtitle,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
           ),
           const SizedBox(height: 32),
-          Card(
+          GlassCard(
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -311,14 +377,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   TextFormField(
                     key: const ValueKey('onboarding_account_name'),
                     initialValue: _accountName,
-                    decoration: const InputDecoration(
-                      labelText: 'Nombre de la cuenta',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.accountName,
                       prefixIcon: Icon(Icons.edit),
                     ),
                     onChanged: (value) {
                       setState(() {
-                        _accountName = value.isEmpty ? 'Efectivo' : value;
+                        _accountName = value.isEmpty ? l10n.cashAccount : value;
                       });
                     },
                   ),
@@ -328,12 +393,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     decoration: BoxDecoration(
                       color:
                           Theme.of(context).colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(18),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Moneda:'),
+                        Text(l10n.selectedCurrencyLabel),
                         Text(
                           '${CurrencyCatalog.getSymbol(_selectedCurrency)} $_selectedCurrency',
                           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -361,8 +426,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Tip: Empieza con "Efectivo" y puedes agregar\n'
-                    'cuentas bancarias después.',
+                    l10n.onboardingAccountTip,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onSecondaryContainer,
                     ),
@@ -377,6 +441,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Widget _buildNavigationButtons() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Row(
@@ -385,7 +451,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             TextButton(
               key: const ValueKey('onboarding_back'),
               onPressed: _previousPage,
-              child: const Text('Atrás'),
+              child: Text(l10n.back),
             )
           else
             const SizedBox(width: 80),
@@ -394,7 +460,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             FilledButton(
               key: const ValueKey('onboarding_next'),
               onPressed: _nextPage,
-              child: const Text('Continuar'),
+              child: Text(l10n.continueLabel),
             )
           else
             FilledButton(
@@ -406,7 +472,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       height: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text('Comenzar'),
+                  : Text(l10n.start),
             ),
         ],
       ),
