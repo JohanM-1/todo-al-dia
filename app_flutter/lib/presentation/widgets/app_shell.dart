@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../l10n/app_localizations.dart';
 
 class AppShell extends StatelessWidget {
   final Widget child;
@@ -14,57 +15,110 @@ class AppShell extends StatelessWidget {
     required this.state,
   });
 
-  static const _tabs = [
-    _TabConfig(
-      path: '/home',
-      label: 'Inicio',
-      icon: Icons.home_outlined,
-      selectedIcon: Icons.home_rounded,
-    ),
-    _TabConfig(
-      path: '/movements',
-      label: 'Movimientos',
-      icon: Icons.receipt_long_outlined,
-      selectedIcon: Icons.receipt_long_rounded,
-    ),
-    _TabConfig(
-      path: '/budgets',
-      label: 'Presupuestos',
-      icon: Icons.pie_chart_outline_rounded,
-      selectedIcon: Icons.pie_chart_rounded,
-    ),
-    _TabConfig(
-      path: '/goals',
-      label: 'Metas',
-      icon: Icons.savings_outlined,
-      selectedIcon: Icons.savings_rounded,
-    ),
-    _TabConfig(
-      path: '/settings',
-      label: 'Ajustes',
-      icon: Icons.settings_outlined,
-      selectedIcon: Icons.settings_rounded,
-    ),
-  ];
+  List<_TabConfig> _tabs(AppLocalizations l10n) => [
+        _TabConfig(
+          path: '/home',
+          label: l10n.home,
+          icon: Icons.home_outlined,
+          selectedIcon: Icons.home_rounded,
+        ),
+        _TabConfig(
+          path: '/movements',
+          label: l10n.movements,
+          icon: Icons.receipt_long_outlined,
+          selectedIcon: Icons.receipt_long_rounded,
+        ),
+        _TabConfig(
+          path: '/budgets',
+          label: l10n.budgets,
+          icon: Icons.pie_chart_outline_rounded,
+          selectedIcon: Icons.pie_chart_rounded,
+        ),
+        _TabConfig(
+          path: '/goals',
+          label: l10n.goals,
+          icon: Icons.savings_outlined,
+          selectedIcon: Icons.savings_rounded,
+        ),
+        _TabConfig(
+          path: '/settings',
+          label: l10n.settings,
+          icon: Icons.settings_outlined,
+          selectedIcon: Icons.settings_rounded,
+        ),
+      ];
 
-  int _getCurrentIndex(String location) {
-    for (int i = 0; i < _tabs.length; i++) {
-      if (location.startsWith(_tabs[i].path)) {
+  int _getCurrentIndex(String location, List<_TabConfig> tabs) {
+    for (int i = 0; i < tabs.length; i++) {
+      if (location.startsWith(tabs[i].path)) {
         return i;
       }
     }
     return 0;
   }
 
+  bool _shouldShowMobileLabels(
+    BuildContext context,
+    double maxWidth,
+    List<_TabConfig> tabs,
+  ) {
+    if (maxWidth <= 0) return false;
+
+    final theme = Theme.of(context);
+    final labelStyle = theme.navigationBarTheme.labelTextStyle?.resolve({
+          WidgetState.selected,
+        }) ??
+        theme.textTheme.labelMedium;
+
+    if (labelStyle == null) return true;
+
+    final textDirection = Directionality.of(context);
+    final textScaler = MediaQuery.textScalerOf(context);
+    final widthPerDestination = maxWidth / tabs.length;
+
+    final maxLabelWidth = tabs
+        .map(
+          (tab) => _measureLabelWidth(
+            tab.label,
+            style: labelStyle,
+            textDirection: textDirection,
+            textScaler: textScaler,
+          ),
+        )
+        .reduce((current, next) => current > next ? current : next);
+
+    return widthPerDestination >= maxLabelWidth;
+  }
+
+  double _measureLabelWidth(
+    String label, {
+    required TextStyle style,
+    required TextDirection textDirection,
+    required TextScaler textScaler,
+  }) {
+    final painter = TextPainter(
+      text: TextSpan(text: label, style: style),
+      textDirection: textDirection,
+      textScaler: textScaler,
+      maxLines: 1,
+    )..layout();
+
+    return painter.width;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final currentIndex = _getCurrentIndex(state.uri.toString());
+    final l10n = AppLocalizations.of(context)!;
+    final tabs = _tabs(l10n);
+    final currentIndex = _getCurrentIndex(state.uri.toString(), tabs);
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final isMobile = constraints.maxWidth < 600;
         final isTablet =
             constraints.maxWidth >= 600 && constraints.maxWidth < 900;
+        final shouldShowMobileLabels =
+            _shouldShowMobileLabels(context, constraints.maxWidth, tabs);
 
         if (isMobile) {
           return Scaffold(
@@ -75,9 +129,12 @@ class AppShell extends StatelessWidget {
               child: _NavigationBarSurface(
                 child: NavigationBar(
                   selectedIndex: currentIndex,
+                  labelBehavior: shouldShowMobileLabels
+                      ? NavigationDestinationLabelBehavior.alwaysShow
+                      : NavigationDestinationLabelBehavior.alwaysHide,
                   onDestinationSelected: (index) =>
-                      context.go(_tabs[index].path),
-                  destinations: _tabs
+                      context.go(tabs[index].path),
+                  destinations: tabs
                       .map(
                         (tab) => NavigationDestination(
                           icon: Icon(tab.icon),
@@ -101,8 +158,9 @@ class AppShell extends StatelessWidget {
                   _RailSurface(
                     isTablet: isTablet,
                     currentIndex: currentIndex,
+                    tabs: tabs,
                     onDestinationSelected: (index) =>
-                        context.go(_tabs[index].path),
+                        context.go(tabs[index].path),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -160,11 +218,13 @@ class _NavigationBarSurface extends StatelessWidget {
 class _RailSurface extends StatelessWidget {
   final bool isTablet;
   final int currentIndex;
+  final List<_TabConfig> tabs;
   final ValueChanged<int> onDestinationSelected;
 
   const _RailSurface({
     required this.isTablet,
     required this.currentIndex,
+    required this.tabs,
     required this.onDestinationSelected,
   });
 
@@ -242,7 +302,7 @@ class _RailSurface extends StatelessWidget {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'Control diario',
+                              AppLocalizations.of(context)!.shellSubtitle,
                               style: theme.textTheme.bodySmall?.copyWith(
                                 color: scheme.onSurfaceVariant,
                               ),
@@ -263,7 +323,7 @@ class _RailSurface extends StatelessWidget {
               useIndicator: true,
               onDestinationSelected: onDestinationSelected,
               leading: const SizedBox.shrink(),
-              destinations: AppShell._tabs
+              destinations: tabs
                   .map(
                     (tab) => NavigationRailDestination(
                       icon: Icon(tab.icon),
