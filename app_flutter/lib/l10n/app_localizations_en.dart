@@ -134,6 +134,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get termsAndPrivacy => 'Terms and Privacy';
 
   @override
+  String get privacy => 'Privacy';
+
+  @override
+  String get privacySubtitle => 'How the app uses your data and permissions';
+
+  @override
   String get selectCurrency => 'Select Currency';
 
   @override
@@ -232,4 +238,130 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get budgetWarning => 'Budget Warning';
+
+  @override
+  String get unavailable => 'Unavailable';
+
+  @override
+  String get searchByNameOrCode => 'Search by name or code';
+
+  @override
+  String get noCurrenciesFound =>
+      'We couldn\'t find currencies for that search.';
+
+  @override
+  String get settingsHeroEyebrow => 'Preferences';
+
+  @override
+  String get settingsHeroTitle => 'Tailor the app to your daily routine.';
+
+  @override
+  String get settingsHeroSubtitle =>
+      'Theme, language, currency, and data shortcuts grouped with a cleaner visual hierarchy.';
+
+  @override
+  String get shellSubtitle => 'Daily control';
+
+  @override
+  String get selectThemeColor => 'Select color';
+
+  @override
+  String privacyTitle(String appName) {
+    return '$appName Privacy';
+  }
+
+  @override
+  String get privacyIntro =>
+      'We apply a simple, low-friction policy: your information stays on your device and is only used for the features you choose inside the app.';
+
+  @override
+  String get privacyLocalDataTitle => 'Local data';
+
+  @override
+  String get privacyLocalDataDescription =>
+      'Your movements, categories, and preferences are stored locally on this device.';
+
+  @override
+  String get privacyMicrophoneTitle => 'Microphone';
+
+  @override
+  String get privacyMicrophoneDescription =>
+      'It is only requested when you use voice features and is not part of the app\'s normal usage.';
+
+  @override
+  String get privacyExportsTitle => 'Exports';
+
+  @override
+  String get privacyExportsDescription =>
+      'Files are generated only when you start an export from settings.';
+
+  @override
+  String get privacyNoSyncTitle => 'No automatic sync';
+
+  @override
+  String get privacyNoSyncDescription =>
+      'The app does not expose account integration or cloud sync from this screen.';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingWelcomeEyebrow => 'Welcome';
+
+  @override
+  String get onboardingWelcomeTitle =>
+      'Organize your money with a clear interface.';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'Log movements, track budgets, and turn goals into visible decisions from day one.';
+
+  @override
+  String get onboardingVoiceFeature => 'Voice';
+
+  @override
+  String get onboardingBudgetsFeature => 'Budgets';
+
+  @override
+  String get onboardingGoalsFeature => 'Goals';
+
+  @override
+  String get onboardingCurrencyTitle => 'What\'s your currency?';
+
+  @override
+  String get onboardingCurrencySubtitle =>
+      'Choose the main currency for your transactions.';
+
+  @override
+  String get onboardingCurrencyDefaultHint =>
+      'COP is preselected as your starting currency.';
+
+  @override
+  String get onboardingAccountTitle => 'Create your first account';
+
+  @override
+  String get onboardingAccountSubtitle =>
+      'An account helps you organize your movements. You can add more later.';
+
+  @override
+  String get accountName => 'Account name';
+
+  @override
+  String get cashAccount => 'Cash';
+
+  @override
+  String get selectedCurrencyLabel => 'Currency:';
+
+  @override
+  String get onboardingAccountTip =>
+      'Tip: Start with \"Cash\" and you can add bank accounts later.';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get continueLabel => 'Continue';
+
+  @override
+  String get start => 'Start';
 }

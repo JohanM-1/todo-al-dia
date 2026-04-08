@@ -2,12 +2,15 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../core/constants/app_constants.dart';
+import '../../core/constants/currency_catalog.dart';
+
 class AppDatabase {
   static bool _initialized = false;
   static final AppDatabase instance = AppDatabase._();
 
   // Cache for currency (sync access)
-  static String _cachedCurrency = 'ARS';
+  static String _cachedCurrency = AppConstants.defaultCurrency;
 
   AppDatabase._();
 
@@ -42,7 +45,9 @@ class AppDatabase {
     // Load currency cache
     final currencySetting = _settingsBox.get('currency');
     if (currencySetting != null) {
-      _cachedCurrency = currencySetting['value'] as String? ?? 'ARS';
+      _cachedCurrency = CurrencyCatalog.normalizeCode(
+        currencySetting['value'] as String?,
+      );
     }
 
     _initialized = true;
@@ -54,7 +59,7 @@ class AppDatabase {
     // Default account
     await _accountsBox.add({
       'name': 'Efectivo',
-      'currency': 'ARS',
+      'currency': AppConstants.defaultCurrency,
       'balance': 0.0,
       'is_active': 1,
       'created_at': now,
@@ -103,7 +108,10 @@ class AppDatabase {
     }
 
     // Default settings
-    await _settingsBox.put('currency', {'key': 'currency', 'value': 'ARS'});
+    await _settingsBox.put('currency', {
+      'key': 'currency',
+      'value': AppConstants.defaultCurrency,
+    });
     await _settingsBox.put('onboarding_complete',
         {'key': 'onboarding_complete', 'value': 'false'});
   }
@@ -349,10 +357,8 @@ class AppDatabase {
   /// Load and cache currency from settings.
   /// Call this on app startup to ensure currency is available.
   Future<void> loadCurrencyCache() async {
-    final currency = await getSetting('currency');
-    if (currency != null) {
-      _cachedCurrency = currency;
-    }
+    _cachedCurrency =
+        CurrencyCatalog.normalizeCode(await getSetting('currency'));
   }
 
   // Settings operations
@@ -362,14 +368,17 @@ class AppDatabase {
   }
 
   /// Get currency synchronously from cache.
-  /// Returns 'ARS' if not yet initialized.
+  /// Returns the app default currency if not yet initialized.
   static String get currentCurrency => _cachedCurrency;
 
   Future<void> setSetting(String key, String value) async {
-    await _settingsBox.put(key, {'key': key, 'value': value});
+    final normalizedValue =
+        key == 'currency' ? CurrencyCatalog.normalizeCode(value) : value;
+
+    await _settingsBox.put(key, {'key': key, 'value': normalizedValue});
     // Cache currency when updated
     if (key == 'currency') {
-      _cachedCurrency = value;
+      _cachedCurrency = normalizedValue;
     }
   }
 

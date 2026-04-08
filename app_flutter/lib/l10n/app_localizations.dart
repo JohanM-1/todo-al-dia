@@ -344,6 +344,18 @@ abstract class AppLocalizations {
   /// **'Terms and Privacy'**
   String get termsAndPrivacy;
 
+  /// Privacy setting label
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get privacy;
+
+  /// Privacy setting subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'How the app uses your data and permissions'**
+  String get privacySubtitle;
+
   /// Currency picker dialog title
   ///
   /// In en, this message translates to:
@@ -541,6 +553,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Budget Warning'**
   String get budgetWarning;
+
+  /// Unavailable status label
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get unavailable;
+
+  /// Currency search field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or code'**
+  String get searchByNameOrCode;
+
+  /// Empty state for currency search results
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t find currencies for that search.'**
+  String get noCurrenciesFound;
+
+  /// Settings hero eyebrow
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get settingsHeroEyebrow;
+
+  /// Settings hero title
+  ///
+  /// In en, this message translates to:
+  /// **'Tailor the app to your daily routine.'**
+  String get settingsHeroTitle;
+
+  /// Settings hero subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Theme, language, currency, and data shortcuts grouped with a cleaner visual hierarchy.'**
+  String get settingsHeroSubtitle;
+
+  /// Sidebar shell subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Daily control'**
+  String get shellSubtitle;
+
+  /// Theme color setting subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Select color'**
+  String get selectThemeColor;
+
+  /// Privacy bottom sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'{appName} Privacy'**
+  String privacyTitle(String appName);
+
+  /// Privacy bottom sheet introduction
+  ///
+  /// In en, this message translates to:
+  /// **'We apply a simple, low-friction policy: your information stays on your device and is only used for the features you choose inside the app.'**
+  String get privacyIntro;
+
+  /// Privacy section title for local data
+  ///
+  /// In en, this message translates to:
+  /// **'Local data'**
+  String get privacyLocalDataTitle;
+
+  /// Privacy section description for local data
+  ///
+  /// In en, this message translates to:
+  /// **'Your movements, categories, and preferences are stored locally on this device.'**
+  String get privacyLocalDataDescription;
+
+  /// Privacy section title for microphone
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone'**
+  String get privacyMicrophoneTitle;
+
+  /// Privacy section description for microphone
+  ///
+  /// In en, this message translates to:
+  /// **'It is only requested when you use voice features and is not part of the app\'s normal usage.'**
+  String get privacyMicrophoneDescription;
+
+  /// Privacy section title for exports
+  ///
+  /// In en, this message translates to:
+  /// **'Exports'**
+  String get privacyExportsTitle;
+
+  /// Privacy section description for exports
+  ///
+  /// In en, this message translates to:
+  /// **'Files are generated only when you start an export from settings.'**
+  String get privacyExportsDescription;
+
+  /// Privacy section title for sync
+  ///
+  /// In en, this message translates to:
+  /// **'No automatic sync'**
+  String get privacyNoSyncTitle;
+
+  /// Privacy section description for sync
+  ///
+  /// In en, this message translates to:
+  /// **'The app does not expose account integration or cloud sync from this screen.'**
+  String get privacyNoSyncDescription;
+
+  /// Onboarding skip button
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// Onboarding welcome eyebrow
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome'**
+  String get onboardingWelcomeEyebrow;
+
+  /// Onboarding welcome title
+  ///
+  /// In en, this message translates to:
+  /// **'Organize your money with a clear interface.'**
+  String get onboardingWelcomeTitle;
+
+  /// Onboarding welcome subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Log movements, track budgets, and turn goals into visible decisions from day one.'**
+  String get onboardingWelcomeSubtitle;
+
+  /// Onboarding feature chip for voice
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get onboardingVoiceFeature;
+
+  /// Onboarding feature chip for budgets
+  ///
+  /// In en, this message translates to:
+  /// **'Budgets'**
+  String get onboardingBudgetsFeature;
+
+  /// Onboarding feature chip for goals
+  ///
+  /// In en, this message translates to:
+  /// **'Goals'**
+  String get onboardingGoalsFeature;
+
+  /// Onboarding currency step title
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s your currency?'**
+  String get onboardingCurrencyTitle;
+
+  /// Onboarding currency step subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the main currency for your transactions.'**
+  String get onboardingCurrencySubtitle;
+
+  /// Hint explaining the onboarding default currency
+  ///
+  /// In en, this message translates to:
+  /// **'COP is preselected as your starting currency.'**
+  String get onboardingCurrencyDefaultHint;
+
+  /// Onboarding account step title
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first account'**
+  String get onboardingAccountTitle;
+
+  /// Onboarding account step subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'An account helps you organize your movements. You can add more later.'**
+  String get onboardingAccountSubtitle;
+
+  /// Account name field label
+  ///
+  /// In en, this message translates to:
+  /// **'Account name'**
+  String get accountName;
+
+  /// Default cash account name
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get cashAccount;
+
+  /// Selected currency summary label
+  ///
+  /// In en, this message translates to:
+  /// **'Currency:'**
+  String get selectedCurrencyLabel;
+
+  /// Onboarding account tip
+  ///
+  /// In en, this message translates to:
+  /// **'Tip: Start with \"Cash\" and you can add bank accounts later.'**
+  String get onboardingAccountTip;
+
+  /// Back button text
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// Continue button text
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueLabel;
+
+  /// Start button text
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get start;
 }
 
 class _AppLocalizationsDelegate

@@ -164,6 +164,14 @@
   "@termsAndPrivacy": {
     "description": "Terms setting label"
   },
+  "privacy": "Privacy",
+  "@privacy": {
+    "description": "Privacy setting label"
+  },
+  "privacySubtitle": "How the app uses your data and permissions",
+  "@privacySubtitle": {
+    "description": "Privacy setting subtitle"
+  },
   "selectCurrency": "Select Currency",
   "@selectCurrency": {
     "description": "Currency picker dialog title"
@@ -295,5 +303,158 @@
   "budgetWarning": "Budget Warning",
   "@budgetWarning": {
     "description": "Budget warning message"
+  },
+  "unavailable": "Unavailable",
+  "@unavailable": {
+    "description": "Unavailable status label"
+  },
+  "searchByNameOrCode": "Search by name or code",
+  "@searchByNameOrCode": {
+    "description": "Currency search field hint"
+  },
+  "noCurrenciesFound": "We couldn't find currencies for that search.",
+  "@noCurrenciesFound": {
+    "description": "Empty state for currency search results"
+  },
+  "settingsHeroEyebrow": "Preferences",
+  "@settingsHeroEyebrow": {
+    "description": "Settings hero eyebrow"
+  },
+  "settingsHeroTitle": "Tailor the app to your daily routine.",
+  "@settingsHeroTitle": {
+    "description": "Settings hero title"
+  },
+  "settingsHeroSubtitle": "Theme, language, currency, and data shortcuts grouped with a cleaner visual hierarchy.",
+  "@settingsHeroSubtitle": {
+    "description": "Settings hero subtitle"
+  },
+  "shellSubtitle": "Daily control",
+  "@shellSubtitle": {
+    "description": "Sidebar shell subtitle"
+  },
+  "selectThemeColor": "Select color",
+  "@selectThemeColor": {
+    "description": "Theme color setting subtitle"
+  },
+  "privacyTitle": "{appName} Privacy",
+  "@privacyTitle": {
+    "description": "Privacy bottom sheet title",
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "privacyIntro": "We apply a simple, low-friction policy: your information stays on your device and is only used for the features you choose inside the app.",
+  "@privacyIntro": {
+    "description": "Privacy bottom sheet introduction"
+  },
+  "privacyLocalDataTitle": "Local data",
+  "@privacyLocalDataTitle": {
+    "description": "Privacy section title for local data"
+  },
+  "privacyLocalDataDescription": "Your movements, categories, and preferences are stored locally on this device.",
+  "@privacyLocalDataDescription": {
+    "description": "Privacy section description for local data"
+  },
+  "privacyMicrophoneTitle": "Microphone",
+  "@privacyMicrophoneTitle": {
+    "description": "Privacy section title for microphone"
+  },
+  "privacyMicrophoneDescription": "It is only requested when you use voice features and is not part of the app's normal usage.",
+  "@privacyMicrophoneDescription": {
+    "description": "Privacy section description for microphone"
+  },
+  "privacyExportsTitle": "Exports",
+  "@privacyExportsTitle": {
+    "description": "Privacy section title for exports"
+  },
+  "privacyExportsDescription": "Files are generated only when you start an export from settings.",
+  "@privacyExportsDescription": {
+    "description": "Privacy section description for exports"
+  },
+  "privacyNoSyncTitle": "No automatic sync",
+  "@privacyNoSyncTitle": {
+    "description": "Privacy section title for sync"
+  },
+  "privacyNoSyncDescription": "The app does not expose account integration or cloud sync from this screen.",
+  "@privacyNoSyncDescription": {
+    "description": "Privacy section description for sync"
+  },
+  "onboardingSkip": "Skip",
+  "@onboardingSkip": {
+    "description": "Onboarding skip button"
+  },
+  "onboardingWelcomeEyebrow": "Welcome",
+  "@onboardingWelcomeEyebrow": {
+    "description": "Onboarding welcome eyebrow"
+  },
+  "onboardingWelcomeTitle": "Organize your money with a clear interface.",
+  "@onboardingWelcomeTitle": {
+    "description": "Onboarding welcome title"
+  },
+  "onboardingWelcomeSubtitle": "Log movements, track budgets, and turn goals into visible decisions from day one.",
+  "@onboardingWelcomeSubtitle": {
+    "description": "Onboarding welcome subtitle"
+  },
+  "onboardingVoiceFeature": "Voice",
+  "@onboardingVoiceFeature": {
+    "description": "Onboarding feature chip for voice"
+  },
+  "onboardingBudgetsFeature": "Budgets",
+  "@onboardingBudgetsFeature": {
+    "description": "Onboarding feature chip for budgets"
+  },
+  "onboardingGoalsFeature": "Goals",
+  "@onboardingGoalsFeature": {
+    "description": "Onboarding feature chip for goals"
+  },
+  "onboardingCurrencyTitle": "What's your currency?",
+  "@onboardingCurrencyTitle": {
+    "description": "Onboarding currency step title"
+  },
+  "onboardingCurrencySubtitle": "Choose the main currency for your transactions.",
+  "@onboardingCurrencySubtitle": {
+    "description": "Onboarding currency step subtitle"
+  },
+  "onboardingCurrencyDefaultHint": "COP is preselected as your starting currency.",
+  "@onboardingCurrencyDefaultHint": {
+    "description": "Hint explaining the onboarding default currency"
+  },
+  "onboardingAccountTitle": "Create your first account",
+  "@onboardingAccountTitle": {
+    "description": "Onboarding account step title"
+  },
+  "onboardingAccountSubtitle": "An account helps you organize your movements. You can add more later.",
+  "@onboardingAccountSubtitle": {
+    "description": "Onboarding account step subtitle"
+  },
+  "accountName": "Account name",
+  "@accountName": {
+    "description": "Account name field label"
+  },
+  "cashAccount": "Cash",
+  "@cashAccount": {
+    "description": "Default cash account name"
+  },
+  "selectedCurrencyLabel": "Currency:",
+  "@selectedCurrencyLabel": {
+    "description": "Selected currency summary label"
+  },
+  "onboardingAccountTip": "Tip: Start with \"Cash\" and you can add bank accounts later.",
+  "@onboardingAccountTip": {
+    "description": "Onboarding account tip"
+  },
+  "back": "Back",
+  "@back": {
+    "description": "Back button text"
+  },
+  "continueLabel": "Continue",
+  "@continueLabel": {
+    "description": "Continue button text"
+  },
+  "start": "Start",
+  "@start": {
+    "description": "Start button text"
   }
 }
