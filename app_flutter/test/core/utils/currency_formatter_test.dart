@@ -5,7 +5,7 @@ import 'package:todoaldia/core/utils/currency_formatter.dart';
 void main() {
   group('CurrencyInputFormatter', () {
     test('formats ARS thousands without resetting at 1000', () {
-      final formatter = CurrencyInputFormatter(currencyCode: 'ARS');
+      final formatter = CurrencyInputFormatter(currencyCode: 'COP');
 
       var value = const TextEditingValue();
 
@@ -35,7 +35,7 @@ void main() {
     });
 
     test('preserves locale decimal separator for ARS', () {
-      final formatter = CurrencyInputFormatter(currencyCode: 'ARS');
+      final formatter = CurrencyInputFormatter(currencyCode: 'COP');
 
       final value = formatter.formatEditUpdate(
         const TextEditingValue(text: '1000'),

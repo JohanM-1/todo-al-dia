@@ -11,7 +11,7 @@ void main() {
       );
 
       expect(account.name, 'Efectivo');
-      expect(account.currency, 'ARS');
+      expect(account.currency, 'COP');
       expect(account.balance, 0.0);
       expect(account.isActive, true);
     });

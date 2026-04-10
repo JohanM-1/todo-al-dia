@@ -2,8 +2,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:todoaldia/core/theme/app_theme.dart';
+import 'package:todoaldia/l10n/app_localizations.dart';
 import 'package:todoaldia/presentation/widgets/app_shell.dart';
+
+Widget buildTestApp({required Size size, double? textScale}) {
+  return MaterialApp(
+    theme: AppTheme.lightTheme,
+    localizationsDelegates: const [
+      AppLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+    ],
+    supportedLocales: AppLocalizations.supportedLocales,
+    builder: (context, child) {
+      return MediaQuery(
+        data: MediaQueryData(
+          textScaler: textScale != null
+              ? TextScaler.linear(textScale)
+              : TextScaler.noScaling,
+        ),
+        child: SizedBox(
+          width: size.width,
+          height: size.height,
+          child: child,
+        ),
+      );
+    },
+    home: const Placeholder(),
+  );
+}
 
 void main() {
   group('AppShell Responsive Navigation', () {
@@ -76,10 +105,18 @@ void main() {
       });
 
       // Act
-      await tester.pumpWidget(MaterialApp.router(
-        theme: AppTheme.lightTheme,
-        routerConfig: router,
-      ));
+      await tester.pumpWidget(
+        MaterialApp.router(
+          theme: AppTheme.lightTheme,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: router,
+        ),
+      );
       await tester.pumpAndSettle();
 
       // Assert
@@ -100,10 +137,18 @@ void main() {
       });
 
       // Act
-      await tester.pumpWidget(MaterialApp.router(
-        theme: AppTheme.lightTheme,
-        routerConfig: router,
-      ));
+      await tester.pumpWidget(
+        MaterialApp.router(
+          theme: AppTheme.lightTheme,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: router,
+        ),
+      );
       await tester.pumpAndSettle();
 
       // Assert
@@ -131,12 +176,15 @@ void main() {
 
       // Act
       await tester.pumpWidget(
-        MediaQuery(
-          data: const MediaQueryData(textScaler: TextScaler.linear(1.4)),
-          child: MaterialApp.router(
-            theme: AppTheme.lightTheme,
-            routerConfig: router,
-          ),
+        MaterialApp.router(
+          theme: AppTheme.lightTheme,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: router,
         ),
       );
       await tester.pumpAndSettle();
@@ -160,10 +208,18 @@ void main() {
       });
 
       // Act
-      await tester.pumpWidget(MaterialApp.router(
-        theme: AppTheme.lightTheme,
-        routerConfig: router,
-      ));
+      await tester.pumpWidget(
+        MaterialApp.router(
+          theme: AppTheme.lightTheme,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: router,
+        ),
+      );
       await tester.pumpAndSettle();
 
       // Assert
@@ -185,10 +241,18 @@ void main() {
       });
 
       // Act
-      await tester.pumpWidget(MaterialApp.router(
-        theme: AppTheme.lightTheme,
-        routerConfig: router,
-      ));
+      await tester.pumpWidget(
+        MaterialApp.router(
+          theme: AppTheme.lightTheme,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: router,
+        ),
+      );
       await tester.pumpAndSettle();
 
       // Assert

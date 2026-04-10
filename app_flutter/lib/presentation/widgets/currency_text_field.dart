@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../../core/constants/currency_catalog.dart';
 import '../../core/utils/currency_formatter.dart';
+import '../../data/database/app_database.dart';
 
 /// TextField especializado para ingreso de montos.
 /// Aplica formato de moneda mientras el usuario escribe.
@@ -12,7 +13,7 @@ import '../../core/utils/currency_formatter.dart';
 /// ```dart
 /// CurrencyTextField(
 ///   controller: _amountController,
-///   currencyCode: 'COP', // o 'ARS', 'CLP', etc.
+///   currencyCode: 'COP', // o 'COP', 'CLP', etc.
 ///   labelText: 'Monto',
 /// )
 /// ```
@@ -105,7 +106,7 @@ class CurrencyTextField extends StatelessWidget {
 /// Helper mixin para widgets que necesitan acceso a la moneda.
 /// Provee método getCurrentCurrency().
 mixin CurrencyAwareWidget<T extends StatefulWidget> on State<T> {
-  String get currentCurrency => 'COP';
+  String get currentCurrency => AppDatabase.currentCurrency;
 
   /// Parsea el valor del controller usando la moneda actual.
   double parseAmount(TextEditingController controller) {

@@ -44,7 +44,7 @@ class CurrencyCatalog {
     // ============ SUDAMÉRICA ============
     // Peso Argentino
     CurrencyInfo(
-      code: 'ARS',
+      code: 'COP',
       name: 'Peso Argentino',
       symbol: r'$',
       locale: 'es_AR',

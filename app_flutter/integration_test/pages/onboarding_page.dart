@@ -45,7 +45,7 @@ class OnboardingPage {
   /// Completes the full onboarding flow: next through all pages and creates account.
   Future<void> completeOnboarding({
     String accountName = 'Test Account',
-    String currencyCode = 'ARS',
+    String currencyCode = 'COP',
   }) async {
     // Page 0 → page 1
     await $.tap(valueKey(nextKey));
